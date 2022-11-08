@@ -1,6 +1,12 @@
 const mysql = require('mysql');
-const config = require('./config/config');
-
+const { DB_PORT, DB, DB_USER, DB_PASSWORD, DB_HOST } = require('./config/key');
+const  config = {
+    host : DB_HOST,
+    port : DB_PORT,
+    database : DB,
+    user : DB_USER,
+    password : DB_PASSWORD
+  }
 const connection = mysql.createConnection(config)
 connection.connect(function(err){
     if(err)

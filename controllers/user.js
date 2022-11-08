@@ -1,13 +1,12 @@
 "use strict"
 
-const mysql = require('mysql');
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require('../model/User');
-const config = require('../config/config');
 const sql = require('../db');
-const db = mysql.createPool(config)
-
+const {
+    JWT_SECRET,
+  } = require("../config/key");
 
 //create table
 // const createUserTable = async(req, res) => {
@@ -29,20 +28,28 @@ const registerController = async(req, res) => {
         email varchar(20),
         password varchar(255),
         mobile varchar(15));`
-        
         const insertQuery = `INSERT INTO user VALUES (NULL, ${user.toString()});`
-
+        const checkEmailQuery = `SELECT email FROM user WHERE email = "${email}"`;
+        let isDuplicate = false;
         sql.query(createQuery, (err,result) => {
             if(err)
               console.log(err)
-            else {
-               console.log(result)
-            }
         })
-        sql.query(insertQuery, (err,result) => {
+         sql.query(checkEmailQuery, (err, result) => {
             if(err)
               console.log(err)
-            else  return res.send(result);
+            else{
+                
+             if(result.length>0)
+                return res.status(422).json({message : "Email already exists!!" });
+             else{
+                sql.query(insertQuery, (err,result) => {
+                    if(err)
+                      console.log(err)
+                })
+                return res.json({message : "Account created"});
+             }
+            }
         })
     } catch (error) {
         return res.status(400).send(error.message);
@@ -53,13 +60,23 @@ const signInController = async(req, res) => {
     try {
         const { email, password } = req.body;
         //find if email is present
-        
-        
-        const hashedPassword = await bcrypt.hash(password, 13);
-        const user = new User(id, fullName, email, hashedPassword, mobile);
-        let pool = mysql.createPool(config);
-        console.log(pool);
-        console.log(user)
+        const checkEmailQuery = `SELECT * FROM user WHERE email = "${email}"`;
+        sql.query(checkEmailQuery, async(err, result) => {
+            if(err)
+              console.log(err);
+            else{
+                if(result.length > 0){
+                    console.log(result)
+                    const doMatch = await bcrypt.compare(password, result[0].password);
+                    if (doMatch) {
+                        const token = jwt.sign({ _id: result[0].id }, JWT_SECRET, { expiresIn: "7d" });
+                        return res.send(token);
+                      } else return res.status(422).json({ error: "Invalid Email or Password!" });
+                }
+                else
+                  res.status(422).send("email not found!!!");
+            }
+        })
     } catch (error) {
         return res.status(400).send(error.message);
     }
