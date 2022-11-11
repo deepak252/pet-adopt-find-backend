@@ -6,7 +6,7 @@ const User = require('../model/User');
 const sql = require('../db');
 const {
     JWT_SECRET,
-  } = require("../config/key");
+} = require("../config/key");
 
 //create table
 // const createUserTable = async(req, res) => {
@@ -14,12 +14,12 @@ const {
 
 // }
 
-const registerController = async(req, res) => {
+const signUp = async (req, res) => {
     try {
-        const { fullName, email, password, mobile} = req.body;
+        const { fullName, email, password, mobile } = req.body;
         const hashedPassword = await bcrypt.hash(password, 13);
         // console.log({ ...req.body });
-        const user = new User( fullName, email, hashedPassword, mobile);
+        const user = new User(fullName, email, hashedPassword, mobile);
 
         console.log(user);
         const createQuery = `CREATE TABLE IF NOT EXISTS 
@@ -31,24 +31,24 @@ const registerController = async(req, res) => {
         const insertQuery = `INSERT INTO user VALUES (NULL, ${user.toString()});`
         const checkEmailQuery = `SELECT email FROM user WHERE email = "${email}"`;
         let isDuplicate = false;
-        sql.query(createQuery, (err,result) => {
-            if(err)
-              console.log(err)
+        sql.query(createQuery, (err, result) => {
+            if (err)
+                console.log(err)
         })
-         sql.query(checkEmailQuery, (err, result) => {
-            if(err)
-              console.log(err)
-            else{
-                
-             if(result.length>0)
-                return res.status(422).json({message : "Email already exists!!" });
-             else{
-                sql.query(insertQuery, (err,result) => {
-                    if(err)
-                      console.log(err)
-                })
-                return res.json({message : "Account created"});
-             }
+        sql.query(checkEmailQuery, (err, result) => {
+            if (err)
+                console.log(err)
+            else {
+
+                if (result.length > 0)
+                    return res.status(422).json({ message: "Email already exists!!" });
+                else {
+                    sql.query(insertQuery, (err, result) => {
+                        if (err)
+                            console.log(err)
+                    })
+                    return res.json({ message: "Account created" });
+                }
             }
         })
     } catch (error) {
@@ -56,25 +56,25 @@ const registerController = async(req, res) => {
     }
 }
 
-const signInController = async(req, res) => {
+const signIn = async (req, res) => {
     try {
         const { email, password } = req.body;
         //find if email is present
         const checkEmailQuery = `SELECT * FROM user WHERE email = "${email}"`;
-        sql.query(checkEmailQuery, async(err, result) => {
-            if(err)
-              console.log(err);
-            else{
-                if(result.length > 0){
+        sql.query(checkEmailQuery, async (err, result) => {
+            if (err)
+                console.log(err);
+            else {
+                if (result.length > 0) {
                     console.log(result)
                     const doMatch = await bcrypt.compare(password, result[0].password);
                     if (doMatch) {
                         const token = jwt.sign({ _id: result[0].id }, JWT_SECRET, { expiresIn: "7d" });
                         return res.send(token);
-                      } else return res.status(422).json({ error: "Invalid Email or Password!" });
+                    } else return res.status(422).json({ error: "Invalid Email or Password!" });
                 }
                 else
-                  res.status(422).send("email not found!!!");
+                    res.status(422).send("email not found!!!");
             }
         })
     } catch (error) {
@@ -83,6 +83,6 @@ const signInController = async(req, res) => {
 }
 
 module.exports = {
-    registerController,
-    signInController
+    signUp,
+    signIn
 }

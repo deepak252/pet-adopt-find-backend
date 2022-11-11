@@ -4,5 +4,5 @@ module.exports = {
     DB_PORT : 3306,
     DB : "petdb",
     DB_USER : "root",
-    DB_PASSWORD : "Satyam20@"
+    DB_PASSWORD : "password"
 }
