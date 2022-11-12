@@ -30,7 +30,6 @@ const signUp = async (req, res) => {
         mobile varchar(15));`
         const insertQuery = `INSERT INTO user VALUES (NULL, ${user.toString()});`
         const checkEmailQuery = `SELECT email FROM user WHERE email = "${email}"`;
-        let isDuplicate = false;
         sql.query(createQuery, (err, result) => {
             if (err)
                 console.log(err)
