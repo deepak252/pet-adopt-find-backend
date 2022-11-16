@@ -6,7 +6,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use(require("./routes/authRoute"));
-
+app.use(require("./routes/petRoute"));
 const PORT = process.env.PORT || "8000";
 
  app.listen(PORT, () => {

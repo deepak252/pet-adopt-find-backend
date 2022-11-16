@@ -10,4 +10,4 @@ class User{
         return `"${this.fullName}","${this.email}","${this.password}","${this.mobile}"`
     }
 }
-module.exports = User;
+module.exports = User; 

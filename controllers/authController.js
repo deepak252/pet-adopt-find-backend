@@ -20,16 +20,30 @@ const signUp = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 13);
         // console.log({ ...req.body });
         const user = new User(fullName, email, hashedPassword, mobile);
-
-        console.log(user);
+        // const createAddressTable = `CREATE TABLE IF NOT EXISTS
+        // Address(adressId int(10) PRIMARY KEY AUTO_INCREMENT,
+        // address varchar(255),
+        // city varchar(20),
+        // state varchar(15),
+        // pincode INT(11),
+        // coordinates varchar(80)
+        // );
+        // `
         const createQuery = `CREATE TABLE IF NOT EXISTS 
-        user (id int(11) PRIMARY KEY AUTO_INCREMENT,
+        users (userId int(11) PRIMARY KEY AUTO_INCREMENT,
         fullName varchar(30) NOT NULL,
         email varchar(20),
         password varchar(255),
-        mobile varchar(15));`
-        const insertQuery = `INSERT INTO user VALUES (NULL, ${user.toString()});`
-        const checkEmailQuery = `SELECT email FROM user WHERE email = "${email}"`;
+        mobile varchar(15),
+        addressId int(11),
+        profilePic varchar(255),
+        adoptPetsId int(11),
+        uploadPetsId int(11),
+        favouritePetsId int(11),
+        fcmId int(11)
+        );`
+        const insertQuery = `INSERT INTO users VALUES (NULL, ${user.toString()}, NULL, NULL, NULL, NULL, NULL, NULL);`
+        const checkEmailQuery = `SELECT email FROM users WHERE email = "${email}"`;
         sql.query(createQuery, (err, result) => {
             if (err)
                 console.log(err)
@@ -59,7 +73,7 @@ const signIn = async (req, res) => {
     try {
         const { email, password } = req.body;
         //find if email is present
-        const checkEmailQuery = `SELECT * FROM user WHERE email = "${email}"`;
+        const checkEmailQuery = `SELECT * FROM users WHERE email = "${email}"`;
         sql.query(checkEmailQuery, async (err, result) => {
             if (err)
                 console.log(err);
