@@ -1,9 +1,10 @@
 "use strict"
 
 const Address = require("../model/Address");
-const sql = require('../db');
+const {query} = require('../db');
 
-const inputAddress = async(addressLine, city, state, pincode, coordinates) => {
+module.exports.insertAddress = async(addressLine, city, state, pincode, coordinates) => {
+    try{
         const newAddress = new Address(addressLine, city, state, pincode,coordinates);
         const createAddressTableQuery = `
         CREATE TABLE IF NOT EXISTS address(
@@ -18,17 +19,12 @@ const inputAddress = async(addressLine, city, state, pincode, coordinates) => {
         const insertAddressQuery = `
         INSERT INTO address VALUES (NULL,${newAddress.toString()})
         `
-          sql.query(createAddressTableQuery, (err, result) => {
-            if(err)
-             console.log(err);
-        })
-        return sql.query(insertAddressQuery, (err, result) => {
-            if(err) console.log(err);
-            else {
-               return result.insertId;
-            }
-        })
-       
+        await query(createAddressTableQuery);
+        var result =  await query(insertAddressQuery);
+        return result.insertId;
+        
+    }catch(err){
+        console.error(err);
+    }
+        
 }
-
-module.exports = inputAddress;

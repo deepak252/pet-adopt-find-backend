@@ -1,14 +1,16 @@
 "use strict"
 
 const Pet = require("../model/Pet");
-const inputAddress = require("./addressController");
-const sql = require('../db');
+const { insertAddress } = require("./addressController");
+const {query} = require('../db');
+const { successMessage, errorMessage } = require("../utils/responseUtils");
+
 const createPost = async(req, res) => {
     try {
         const { userId, petName, breed, age, photos, category, petStatus,
         addressLine, city, state, pincode, coordinates } = req.body;
-       const addressId = await inputAddress(addressLine, city, state, pincode, coordinates);
-        console.log(addressId)
+        const addressId = await insertAddress(addressLine, city, state, pincode, coordinates);
+        console.log({addressId})
        const createPetTableQuery = `CREATE TABLE IF NOT EXISTS pets(
        petId int(11) PRIMARY KEY AUTO_INCREMENT,
        userId int(11),
@@ -28,22 +30,19 @@ const createPost = async(req, res) => {
       const createPostQuery = `
       INSERT INTO pets VALUES (NULL, ${newPost.toString()});
       `
-       sql.query(createPetTableQuery, (err, result) => {
-        if(err) console.log(err)
-       })
-
-       sql.query(createPostQuery, (err, result) => {
-        if(err) console.log(err)
-        else {
-            const updateUserQuery = `UPDATE users SET uploadPetsId="${result.insertId}" where userId="${userId}";`
-            sql.query(updateUserQuery, (err, upres) => {
-                if(err) console.log(err)
-            })
-            return res.json({message : "Created Post..."})
-        }
-       })
+       await query(createPetTableQuery);
+       var result = await query(createPostQuery);
+       if(result){
+           const updateUserQuery = `UPDATE users SET uploadPetsId="${result.insertId}" where userId="${userId}";`
+            await query(updateUserQuery);    
+           return res.json(successMessage(
+                result
+           ))
+       }
     } catch (error) {
-        return res.status(400).send(error.message);
+        return res.status(400).json(
+            errorMessage(error.message)
+        );
     }
 }
 
