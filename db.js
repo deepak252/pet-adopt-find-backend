@@ -1,4 +1,6 @@
 const mysql = require('mysql');
+const util = require('util');
+
 const { DB_PORT, DB, DB_USER, DB_PASSWORD, DB_HOST } = require('./config/key');
 const  config = {
     host : DB_HOST,
@@ -15,4 +17,6 @@ connection.connect(function(err){
       console.log("connection created with mysql successfully");
 });
 
-module.exports = connection;
+const query = util.promisify(connection.query).bind(connection);
+
+module.exports = {connection,query};
