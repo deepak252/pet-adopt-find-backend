@@ -26,14 +26,20 @@ const createPost = async(req, res) => {
        createdAt varchar(20)
        );
        `
-     const newPost = new Pet(userId, petName, breed, age, "1", photos, category, petStatus, new Date()) ;
+     const newPost = new Pet(userId, petName, breed, age, addressId, photos, category, petStatus, new Date()) ;
       const createPostQuery = `
       INSERT INTO pets VALUES (NULL, ${newPost.toString()});
       `
+
        await query(createPetTableQuery);
        var result = await query(createPostQuery);
        if(result){
-           const updateUserQuery = `UPDATE users SET uploadPetsId="${result.insertId}" where userId="${userId}";`
+           const previousPetIdsQuery = `SELECT uploadPetsId from users where userId="${userId}";`
+            const petIdsRes = await query(previousPetIdsQuery);
+          
+            const petIds = petIdsRes[0].uploadPetsId ?  [petIdsRes[0].uploadPetsId,result.insertId] : [result.insertId];
+            console.log(petIds)
+            const updateUserQuery = `UPDATE users SET uploadPetsId="[3,4]" where userId="${userId}";`
             await query(updateUserQuery);    
            return res.json(successMessage(
                 result
@@ -51,12 +57,10 @@ const getAllPets = async(req, res) => {
         const adoptTypeQuery = `
         SELECT * FROM pets;
         `
-        sql.query(adoptTypeQuery, (err, result) => {
-            if(err) console.log(err)
-            else{
-                return res.status(200).send(result);
-            }
-        })
+        const result = await query(adoptTypeQuery)
+        return res.json(successMessage(
+            result
+       ))
     } catch (error) {
         return res.status(400).send(error.message);
     }
