@@ -7,6 +7,8 @@ app.use(cors());
 
 app.use(require("./routes/authRoute"));
 app.use(require("./routes/petRoute"));
+app.use(require("./routes/userRoute"));
+app.use(require("./routes/adminRoute"));
 const PORT = process.env.PORT || "8000";
 
  app.listen(PORT, () => {
