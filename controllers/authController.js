@@ -52,9 +52,9 @@ const signUp = async (req, res) => {
             mobile varchar(15),
             addressId int(11),
             profilePic varchar(255),
-            adoptPetsId int(11),
-            uploadPetsId int(11),
-            favouritePetsId int(11),
+            adoptPetsId varchar(21),
+            uploadPetsId varchar(21),
+            favouritePetsId varchar(21),
             fcmId int(11)
         );`
         const insertQuery = `INSERT INTO users VALUES (NULL, ${user.toString()}, NULL, NULL, NULL, NULL, NULL, NULL);`
@@ -95,7 +95,7 @@ const signIn = async (req, res) => {
         // Check password
         const doMatch = await bcrypt.compare(password, result[0].password);
         if (doMatch) {
-            const token = jwt.sign({ _id: result[0].id }, JWT_SECRET);
+            const token = jwt.sign({ id: result[0].userId }, JWT_SECRET);
             return res.json(successMessage({ 
                 "message": "Sign In Successful",
                 token

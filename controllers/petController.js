@@ -10,7 +10,7 @@ const createPost = async(req, res) => {
         const { userId, petName, breed, age, photos, category, petStatus,
         addressLine, city, state, pincode, coordinates } = req.body;
         const addressId = await insertAddress(addressLine, city, state, pincode, coordinates);
-        console.log({addressId})
+        //console.log({addressId})
        const createPetTableQuery = `CREATE TABLE IF NOT EXISTS pets(
        petId int(11) PRIMARY KEY AUTO_INCREMENT,
        userId int(11),
@@ -23,14 +23,13 @@ const createPost = async(req, res) => {
        photos varchar(255),
        category varchar(25),
        petStatus varchar(10),
-       createdAt varchar(20)
+       createdAt varchar(100)
        );
        `
      const newPost = new Pet(userId, petName, breed, age, addressId, photos, category, petStatus, new Date()) ;
       const createPostQuery = `
       INSERT INTO pets VALUES (NULL, ${newPost.toString()});
       `
-
        await query(createPetTableQuery);
        var result = await query(createPostQuery);
        if(result){
@@ -38,8 +37,8 @@ const createPost = async(req, res) => {
             const petIdsRes = await query(previousPetIdsQuery);
           
             const petIds = petIdsRes[0].uploadPetsId ?  [petIdsRes[0].uploadPetsId,result.insertId] : [result.insertId];
-            console.log(petIds)
-            const updateUserQuery = `UPDATE users SET uploadPetsId="[3,4]" where userId="${userId}";`
+           // console.log(petIds)
+            const updateUserQuery = `UPDATE users SET uploadPetsId="${petIds}" where userId="${userId}";`
             await query(updateUserQuery);    
            return res.json(successMessage(
                 result
