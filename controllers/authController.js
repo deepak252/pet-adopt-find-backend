@@ -52,9 +52,9 @@ const signUp = async (req, res) => {
             mobile varchar(15),
             addressId int(11),
             profilePic varchar(255),
-            adoptPetsId int(11),
-            uploadPetsId int(11),
-            favouritePetsId int(11),
+            adoptPetsId varchar(21),
+            uploadPetsId varchar(21),
+            favouritePetsId varchar(21),
             fcmId int(11)
         );`
         const insertQuery = `INSERT INTO users VALUES (NULL, ${user.toString()}, NULL, NULL, NULL, NULL, NULL, NULL);`
