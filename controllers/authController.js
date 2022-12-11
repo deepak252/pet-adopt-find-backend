@@ -95,7 +95,7 @@ const signIn = async (req, res) => {
         // Check password
         const doMatch = await bcrypt.compare(password, result[0].password);
         if (doMatch) {
-            const token = jwt.sign({ _id: result[0].id }, JWT_SECRET);
+            const token = jwt.sign({ id: result[0].userId }, JWT_SECRET);
             return res.json(successMessage({ 
                 "message": "Sign In Successful",
                 token
