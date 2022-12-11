@@ -82,7 +82,7 @@ const signIn = async (req, res) => {
                     console.log(result)
                     const doMatch = await bcrypt.compare(password, result[0].password);
                     if (doMatch) {
-                        const token = jwt.sign({ _id: result[0].id }, JWT_SECRET, { expiresIn: "7d" });
+                        const token = jwt.sign({ _id: result[0].id }, JWT_SECRET);
                         return res.send(token);
                     } else return res.status(422).json({ error: "Invalid Email or Password!" });
                 }
