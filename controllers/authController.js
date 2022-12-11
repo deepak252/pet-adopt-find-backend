@@ -22,17 +22,17 @@ const signUp = async (req, res) => {
         const { fullName, email, password, mobile } = req.body;
         if (validator.validateName(fullName)){
             return res.status(400).json(
-                errorMessage(validator.validateName(password))
+                errorMessage(validator.validateName(fullName))
             );
         }
         if (validator.validateEmail(email)) {
             return res.status(400).json(
-                errorMessage(validator.validateEmail(password))
+                errorMessage(validator.validateEmail(email))
             );
         }
         if (validator.validatePhone(mobile)) {
             return res.status(400).json(
-                errorMessage(validator.validatePhone(password))
+                errorMessage(validator.validatePhone(mobile))
             );
         }
         if (validator.validatePassword(password)) {
@@ -68,7 +68,7 @@ const signUp = async (req, res) => {
             );
         }
         result = await sql.query(insertQuery);
-        const token = jwt.sign({ _id: result.insertId }, JWT_SECRET)
+        const token = jwt.sign({ id: result.insertId }, JWT_SECRET)
         return res.json(successMessage({
             "message" : "Account Created Successfully",
             token
@@ -95,7 +95,7 @@ const signIn = async (req, res) => {
         // Check password
         const doMatch = await bcrypt.compare(password, result[0].password);
         if (doMatch) {
-            const token = jwt.sign({ _id: result[0].id }, JWT_SECRET);
+            const token = jwt.sign({ id: result[0].userId }, JWT_SECRET);
             return res.json(successMessage({ 
                 "message": "Sign In Successful",
                 token
@@ -120,7 +120,7 @@ const resetPassword = async (req, res) => {
         //find if email is present
         let result = await sql.query(`SELECT * FROM users WHERE email = "${email}"`);
         if (result.length <= 0) {
-            return res.status(422).json(
+            return res.status(404).json(
                 errorMessage("Email not found!")
             );
         }

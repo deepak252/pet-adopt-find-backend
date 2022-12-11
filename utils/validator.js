@@ -3,7 +3,7 @@ module.exports = {
         if (!name){
             return "name is required"
         }
-        if (typeof name != 'string' || name.trim().length < 6) {
+        if (typeof name != 'string' || name.trim().length < 1) {
             return "Invalid name"
         }
     },
