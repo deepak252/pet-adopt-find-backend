@@ -16,10 +16,11 @@ module.exports.adoptRequest = async(req, res) => {
             FOREIGN KEY (adoptReqToId) REFERENCES users(userId) ON DELETE CASCADE,
             petId int(11),
             FOREIGN KEY (petId) REFERENCES pets(petId) ON  DELETE CASCADE,
+            status varchar(10),
             requestedAt varchar(100)
         );
         `
-        const newRequest = new Request(adoptReqById, adoptReqToId, req.params.petId, new Date());
+        const newRequest = new Request(adoptReqById, adoptReqToId, req.params.petId, "pending", new Date());
         const insertRequestQuery = `
          INSERT INTO requests VALUES (NULL, ${newRequest.toString()});
         `
@@ -28,5 +29,23 @@ module.exports.adoptRequest = async(req, res) => {
        return res.json(successMessage(result))
     } catch (error) {
         return res.status(400).json(errorMessage(error.message))
+    }
+}
+
+module.exports.getPetAdoptRequests = async(req, res) => {
+    try {
+        const petId = req.params.petId;
+        const getRequestsQuery = `
+        SELECT * FROM requests where petId=${petId}
+        `
+        const result = await query(getRequestsQuery);
+        if(result.length==0){
+            return res.status(404).json(
+                errorMessage("Requests is empty!")
+            );
+        }
+        return res.json(successMessage(result));
+    } catch (error) {
+        
     }
 }

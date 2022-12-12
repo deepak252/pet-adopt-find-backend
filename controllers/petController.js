@@ -65,6 +65,7 @@ const getAllPets = async(req, res) => {
     }
 }
 
+
 module.exports = {
     createPost,
     getAllPets
