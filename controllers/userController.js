@@ -1,6 +1,6 @@
 "use strict"
 
-const User = require('../model/User');
+
 const sql = require('../db');
 const validator = require("../utils/validator");
 const { errorMessage, successMessage } = require("../utils/responseUtils");

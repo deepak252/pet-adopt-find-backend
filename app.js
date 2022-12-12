@@ -9,6 +9,7 @@ app.use(require("./routes/authRoute"));
 app.use(require("./routes/petRoute"));
 app.use(require("./routes/userRoute"));
 app.use(require("./routes/adminRoute"));
+app.use(require("./routes/requestRoute"));
 const PORT = process.env.PORT || "8000";
 
  app.listen(PORT, () => {
