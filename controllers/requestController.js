@@ -4,6 +4,7 @@ const {query} = require('../db');
 const Request = require('../model/Request');
 const { successMessage, errorMessage } = require('../utils/responseUtils');
 
+//make a adoption request of a pet
 module.exports.adoptRequest = async(req, res) => {
     try {
         const { adoptReqById, adoptReqToId } = req.body;
@@ -31,7 +32,7 @@ module.exports.adoptRequest = async(req, res) => {
         return res.status(400).json(errorMessage(error.message))
     }
 }
-
+//get All users who requested for adoption of a pet
 module.exports.getPetAdoptRequests = async(req, res) => {
     try {
         const petId = req.params.petId;
@@ -46,6 +47,29 @@ module.exports.getPetAdoptRequests = async(req, res) => {
         }
         return res.json(successMessage(result));
     } catch (error) {
-        
+        return res.status(400).json(
+            errorMessage(error.message)
+        );
     }
 }
+
+
+//get All requests of adoption of pets by a user
+module.exports.getAllRequestsByUser = async(req, res) => {
+    try {
+        const allRequestUserQuery = `
+        select * from requests where adoptReqById=${req.params.userId};
+        `
+        const result = await query(allRequestUserQuery);
+        if(result.length==0){
+            return res.status(404).json(
+                errorMessage("Requests is empty!")
+            );
+        }
+        return res.json(successMessage(result));
+    } catch (error) {
+        return res.status(400).json(
+            errorMessage(error.message)
+        );
+    }
+} 
