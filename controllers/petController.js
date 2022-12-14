@@ -5,7 +5,7 @@ const { insertAddress } = require("./addressController");
 const {query} = require('../db');
 const { successMessage, errorMessage } = require("../utils/responseUtils");
 
-const createPost = async(req, res) => {
+const createPet = async(req, res) => {
     try {
         const { userId, petName, breed, age, photos, category, petStatus,
         addressLine, city, state, pincode, coordinates } = req.body;
@@ -67,6 +67,6 @@ const getAllPets = async(req, res) => {
 
 
 module.exports = {
-    createPost,
+    createPet,
     getAllPets
 }
