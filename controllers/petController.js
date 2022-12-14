@@ -54,7 +54,9 @@ const createPet = async(req, res) => {
 const getAllPets = async(req, res) => {
     try {
         const adoptTypeQuery = `
-        SELECT * FROM pets;
+            SELECT * FROM pets
+            join users  on pets.userId = users.userId
+            join address on pets.addressId = address.addressId;
         `
         const result = await query(adoptTypeQuery)
         return res.json(successMessage(
