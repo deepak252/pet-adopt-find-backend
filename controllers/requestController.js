@@ -73,3 +73,54 @@ module.exports.getAllRequestsByUser = async(req, res) => {
         );
     }
 } 
+
+//delete adoption request
+module.exports.deleteAdoptionRequest = async(req, res) => {
+    try {
+        const deleteQuery =  `
+        delete from requests where requestId="${req.params.requestId}";
+        `
+        const result = await query(deleteQuery);
+        return res.json(successMessage(result));
+    } catch (error) {
+        return res.status(400).json(
+            errorMessage(error.message)
+        );
+    }
+}
+
+//accepted and reject request controller
+module.exports.updateStatusRequest = async(req, res) => {
+    try {
+        const {status} = req.body;
+        const getReqQuery = `
+        select adoptReqById, petId from requests where  requestId="${req.params.requestId}";
+        `
+        const [responseId] = await query(getReqQuery);
+        const userQuery = `
+        select adoptPetsId from users where userId="${responseId.adoptReqById}";
+        `
+        if(status === 'Approved'){
+            const [userRes] = await query(userQuery);
+            const petIds = userRes.adoptPetsId ?  [userRes.adoptPetsId,responseId.adoptReqById] : [responseId.adoptReqById];
+            const updateUserQuery = `
+            update users set adoptPetsId="${petIds}"
+            `
+            const updatePetQuery = `
+            update pets set petStatus = "adopted";
+            `
+            await query(updateUserQuery);
+            await query(updatePetQuery);
+        }
+        const updateStatusQuery = `
+        update requests set status="${status}" where requestId="${req.params.requestId}";
+        `
+        const result = await query(updateStatusQuery);
+        return res.json(successMessage(result));
+        //adoptPetsId
+    } catch (error) {
+        return res.status(400).json(
+            errorMessage(error.message)
+        );
+    }
+}

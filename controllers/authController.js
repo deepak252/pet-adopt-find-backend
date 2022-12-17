@@ -17,7 +17,7 @@ const { errorMessage, successMessage } = require("../utils/responseUtils");
 
 // }
 
-const signUp = async (req, res) => {
+module.exports.signUp = async (req, res) => {
     try {
         const { fullName, email, password, mobile } = req.body;
         if (validator.validateName(fullName)){
@@ -81,7 +81,7 @@ const signUp = async (req, res) => {
     }
 }
 
-const signIn = async (req, res) => {
+module.exports.signIn = async (req, res) => {
     try {
         const { email, password } = req.body;
         //find if email is present
@@ -114,7 +114,7 @@ const signIn = async (req, res) => {
 }
 
 
-const resetPassword = async (req, res) => {
+module.exports.resetPassword = async (req, res) => {
     try {
         const { email, newPassword } = req.body;
         //find if email is present
@@ -147,10 +147,3 @@ const resetPassword = async (req, res) => {
     }
 }
 
-
-
-module.exports = {
-    signUp,
-    signIn,
-    resetPassword
-}
