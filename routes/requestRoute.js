@@ -13,4 +13,10 @@ route.get("/pet/getrequests/:petId", auth, requestController.getPetAdoptRequests
 //get All requests for adoption of pets by a user
 route.get("/user/allrequests/:userId", auth, requestController.getAllRequestsByUser);
 
+//delete request
+route.delete("/request/delete/:requestId", auth, requestController.deleteAdoptionRequest);
+
+//update status of adoption of pet - Pending, Approved,  Rejected
+route.put("/request/update/:requestId", auth, requestController.updateStatusRequest);
+
 module.exports = route;
