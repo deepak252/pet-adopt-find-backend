@@ -80,3 +80,18 @@ module.exports.updateUser = async(req, res) => {
         );
     }
 } 
+
+module.exports.deleteUserById = async (req, res) => {
+    try {
+        let result = await sql.query(`
+            delete from users 
+            where userId="${req.params.id}"
+        `)
+        return res.json(successMessage(result));
+
+    } catch (error) {
+        return res.status(400).json(
+            errorMessage(error.message)
+        );
+    }
+}
