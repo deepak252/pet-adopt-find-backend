@@ -7,7 +7,7 @@ const { auth } = require("../middlewares/auth");
 route.post('/pet/create', auth, petController.createPet);
 
 //get All pets data
-route.get('/pet/getAllPets', auth, petController.getAllPets);
+route.get('/pet/getAllPets', petController.getAllPets);
 
 //Edit pet post
 route.put('/pet/editPet/:petId', auth, petController.editPet)

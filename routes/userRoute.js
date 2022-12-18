@@ -10,5 +10,5 @@ route.get('/user/getProfile', auth, userController.getUser);
 route.post('/user/updateProfile', auth,userController.updateUser);
 
 //delete profile
-route.delete('/user/deleteUser/:id',auth,userController.deleteUserById);
+route.delete('/user/deleteUser',auth,userController.deleteUserById);
 module.exports = route;

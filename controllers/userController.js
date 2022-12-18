@@ -4,12 +4,10 @@
 const sql = require('../db');
 const validator = require("../utils/validator");
 const { errorMessage, successMessage } = require("../utils/responseUtils");
-
+const sqlQueries = require("../utils/sqlQueries");
 module.exports.getUser =  async(req,res)=>{
     try{
-        let result = await sql.query(`
-            select * from users where userId="${req.userId}"
-        `)
+        let result = await sql.query(sqlQueries.getUser('userId', req.userId))
         if(result.length==0){
             return res.status(404).json(
                 errorMessage("User not found!")
@@ -58,15 +56,9 @@ module.exports.updateUser = async(req, res) => {
             }
             updatedCols += ` mobile = "${mobile}" `
         }
-        let result = await sql.query(`
-            UPDATE users
-            set ${updatedCols}
-            where userId = "${req.userId}"
-        `);
+        let result = await sql.query(sqlQueries.updateUser(updatedCols, req.userId));
 
-        result = await sql.query(`
-            select * from users where userId="${req.userId}"
-        `)
+        result = await sql.query(sqlQueries.getUser('userId', req.userId));
         if (result.length == 0) {
             return res.status(404).json(
                 errorMessage("User not found!")
@@ -83,10 +75,7 @@ module.exports.updateUser = async(req, res) => {
 
 module.exports.deleteUserById = async (req, res) => {
     try {
-        let result = await sql.query(`
-            delete from users 
-            where userId="${req.params.id}"
-        `)
+        let result = await sql.query(sqlQueries.deleteUser(req.userId))
         return res.json(successMessage(result));
 
     } catch (error) {
@@ -95,3 +84,14 @@ module.exports.deleteUserById = async (req, res) => {
         );
     }
 }
+
+//  module.exports.addFavouritePet = async(req, res) => {
+//     try {
+//         const {petId} = req.body;
+//          let updateCols = "favouritePetsId = " + petId;
+//     } catch (error) {
+//         return res.status(400).json(
+//             errorMessage(error.message)
+//         );
+//     }
+//  }
