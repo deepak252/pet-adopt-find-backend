@@ -82,6 +82,20 @@ module.exports.getPetsByStatus = async(req, res) => {
     }
 }
 
+module.exports.getUploadedPetsByUser = async(req, res) => {
+    try {
+        const [resultUser] = await query(sqlQueries.getUser('userId', req.userId));
+        const arr = resultUser.uploadPetsId.split(",");
+        const userPetQuery = `
+        select * from pets where petId in (${arr})
+        `
+         const result = await query(userPetQuery);
+         return res.json(successMessage(result));
+    } catch (error) {
+        return res.status(400).send(error.message);
+    }
+}
+
 module.exports.editPet = async (req, res) => {
   try {
     const {
@@ -157,3 +171,4 @@ module.exports.deletePetPost = async (req, res) => {
     return res.status(400).send(error.message);
   }
 };
+

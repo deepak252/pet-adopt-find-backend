@@ -96,4 +96,3 @@ module.exports.getPet = (petId) => {
     select addressId from pets where petId = "${petId}";
     `
 }
- 
