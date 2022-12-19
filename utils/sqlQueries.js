@@ -71,7 +71,7 @@ module.exports.createPetTable = () => `CREATE TABLE IF NOT EXISTS pets(
     petInfo varchar(255),
     breed varchar(25),
     age varchar(8),
-    photos varchar(255),
+    photos varchar(2550),
     category varchar(25),
     gender varchar(10),
     petStatus varchar(10),

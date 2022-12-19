@@ -1,13 +1,12 @@
 class Request{
-    constructor(adoptReqById, adoptReqToId, petId, status, requestedAt){
+    constructor(adoptReqById, petId, status, requestedAt){
         this.adoptReqById = adoptReqById;
-        this.adoptReqToId = adoptReqToId;
         this.petId = petId;
         this.status = status;
         this.requestedAt = requestedAt;
     }
     toString(){
-        return `"${this.adoptReqById}","${this.adoptReqToId}","${this.petId}","${this.status}","${String(this.requestedAt)}"`;
+        return `"${this.adoptReqById}","${this.petId}","${this.status}","${String(this.requestedAt)}"`;
     }
 }
 

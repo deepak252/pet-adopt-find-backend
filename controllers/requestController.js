@@ -7,21 +7,18 @@ const { successMessage, errorMessage } = require('../utils/responseUtils');
 //make a adoption request of a pet
 module.exports.adoptRequest = async(req, res) => {
     try {
-        const { adoptReqById, adoptReqToId } = req.body;
         const createReqTableQuery = `
         CREATE TABLE IF NOT EXISTS requests(
             requestId int(11) PRIMARY KEY AUTO_INCREMENT,
             adoptReqById int(11),
             FOREIGN KEY (adoptReqById) REFERENCES users(userId) ON DELETE CASCADE,
-            adoptReqToId int(11),
-            FOREIGN KEY (adoptReqToId) REFERENCES users(userId) ON DELETE CASCADE,
             petId int(11),
             FOREIGN KEY (petId) REFERENCES pets(petId) ON  DELETE CASCADE,
             status varchar(10),
             requestedAt varchar(100)
         );
         `
-        const newRequest = new Request(adoptReqById, adoptReqToId, req.params.petId, "pending", new Date());
+        const newRequest = new Request(req.userId, req.params.petId, "pending", new Date());
         const insertRequestQuery = `
          INSERT INTO requests VALUES (NULL, ${newRequest.toString()});
         `
