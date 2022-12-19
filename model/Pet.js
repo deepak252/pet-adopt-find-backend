@@ -1,5 +1,5 @@
 class Pet{
-    constructor(userId, petName, petInfo, breed, age, address_id, photos, category, gender, petStatus, createdAt){
+    constructor(userId, petName, petInfo=null, breed=null, age=null, address_id, photos=null, category=null, gender=null, petStatus, createdAt){
         this.userId = userId;
         this.petName = petName;
         this.petInfo = petInfo;

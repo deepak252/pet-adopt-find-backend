@@ -1,5 +1,5 @@
 class Address{
-    constructor(addressLine, city, state, pincode, coordinates){
+    constructor(addressLine=null, city=null, state=null, pincode=null, coordinates=null){
         this.addressLine = addressLine;
         this.city = city;
         this.state = state;

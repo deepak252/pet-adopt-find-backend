@@ -9,6 +9,9 @@ route.post('/pet/create', auth, petController.createPet);
 //get All pets data
 route.get('/pet/getAllPets', petController.getAllPets);
 
+//get pets by status
+route.get('/pet/getPets', petController.getPetsByStatus);
+
 //Edit pet post
 route.put('/pet/editPet/:petId', auth, petController.editPet)
 

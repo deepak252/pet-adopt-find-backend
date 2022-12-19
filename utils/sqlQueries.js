@@ -10,7 +10,7 @@ profilePic varchar(255),
 adoptPetsId varchar(21),
 uploadPetsId varchar(21),
 favouritePetsId varchar(21),
-fcmId int(11)
+fcmToken varchar(11)
 );`;
 module.exports.insertUser = (user) => {
   return `INSERT INTO users VALUES 
@@ -86,6 +86,11 @@ SELECT * FROM pets
 join users  on pets.userId = users.userId
 join address on pets.addressId = address.addressId;
 `;
+module.exports.getPetsByStatus = (status) => {
+    return `SELECT * FROM pets
+    join users  on pets.userId = users.userId
+    join address on pets.addressId = address.addressId where pets.petStatus="${status}";`
+}
 module.exports.getPet = (petId) => {
     return `
     select addressId from pets where petId = "${petId}";

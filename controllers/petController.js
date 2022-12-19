@@ -71,6 +71,17 @@ module.exports.getAllPets = async (req, res) => {
   }
 };
 
+module.exports.getPetsByStatus = async(req, res) => {
+    try {
+      //  if(req.query.status !== 'abandoned' || req.query.status !== 'adopt' || req.query.status !== 'missing')
+             
+        const result = await query(sqlQueries.getPetsByStatus(req.query.status));
+        return res.json(successMessage(result));
+    } catch (error) {
+        return res.status(400).send(error.message);
+    }
+}
+
 module.exports.editPet = async (req, res) => {
   try {
     const {
