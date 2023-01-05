@@ -59,7 +59,20 @@ module.exports.insertAddress = (address) => {
     INSERT INTO address VALUES (NULL,${address.toString()})
     `
 }
-
+module.exports.editAddress = (addressLine, city, state, pincode, coordinates, addressId) => {
+  return `
+  update address 
+  set addressLine = "${addressLine}", city = "${city}", 
+  state = "${state}", pincode = "${pincode}", 
+  coordinates = "${coordinates}" 
+  where addressId = "${addressId}";
+  `;
+}
+module.exports.deleteAddress = (addressId) => {
+  return `
+  delete from address where addressId = "${addressId}";
+ `;
+}
 /////// PET TABLE QUERIES ////////////////
 module.exports.createPetTable = () => `CREATE TABLE IF NOT EXISTS pets(
     petId int(11) PRIMARY KEY AUTO_INCREMENT,
@@ -84,15 +97,61 @@ module.exports.insertPet = (post) => {
 module.exports.getAllPets = () => `
 SELECT * FROM pets
 join users  on pets.userId = users.userId
-join address on pets.addressId = address.addressId;
+join address on pets.addressId = address.addressId order by createdAt desc;
 `;
 module.exports.getPetsByStatus = (status) => {
     return `SELECT * FROM pets
     join users  on pets.userId = users.userId
-    join address on pets.addressId = address.addressId where pets.petStatus="${status}";`
+    join address on pets.addressId = address.addressId where pets.petStatus="${status}" order by createdAt desc;`
 }
-module.exports.getPet = (petId) => {
+module.exports.getPets = (petIds) => {
     return `
-    select addressId from pets where petId = "${petId}";
+    select * from pets join users  on pets.userId = users.userId
+    join address on pets.addressId = address.addressId where petId in (${petIds}) order by createdAt desc;
     `
+}
+module.exports.editPetDetails = (petName, petInfo, breed, age, photos, category, gender, petStatus, petId) => {
+  return `
+  update pets 
+  set petName="${petName}", petInfo="${petInfo}", breed="${breed}", age="${age}",
+  photos="${photos}", category="${category}", gender="${gender}",  petStatus="${petStatus}"
+  where petId="${petId}";
+  `;
+}
+module.exports.deletePet = (petId) => {
+  return `
+  delete from pets where petId = "${petId}";
+  `;
+}
+/////// Request TABLE QUERIES ////////////////
+module.exports.createRequestTable = () => `
+CREATE TABLE IF NOT EXISTS requests(
+    requestId int(11) PRIMARY KEY AUTO_INCREMENT,
+    adoptReqById int(11),
+    FOREIGN KEY (adoptReqById) REFERENCES users(userId) ON DELETE CASCADE,
+    petId int(11),
+    FOREIGN KEY (petId) REFERENCES pets(petId) ON  DELETE CASCADE,
+    status varchar(10),
+    requestedAt varchar(100)
+);
+`
+module.exports.insertRequest = (request) => {
+  return `
+  INSERT INTO requests VALUES (NULL, ${request.toString()});
+ `;
+}
+module.exports.getAdoptRequest = (column, val) => {
+  return `
+  SELECT * FROM requests where ${column} = "${val}"
+  `;
+}
+module.exports.deleteRequest = (requestId) => {
+  return `
+  delete from requests where requestId="${requestId}";
+  `;
+}
+module.exports.updateStatus = (status, requestId) => {
+  return `
+  update requests set status="${status}" where requestId="${requestId}";
+  `;
 }

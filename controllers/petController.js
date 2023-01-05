@@ -85,11 +85,8 @@ module.exports.getPetsByStatus = async(req, res) => {
 module.exports.getUploadedPetsByUser = async(req, res) => {
     try {
         const [resultUser] = await query(sqlQueries.getUser('userId', req.userId));
-        const arr = resultUser.uploadPetsId.split(",");
-        const userPetQuery = `
-        select * from pets where petId in (${arr})
-        `
-         const result = await query(userPetQuery);
+        const arr = resultUser?.uploadPetsId?.split(",");
+         const result = arr ? await query(sqlQueries.getPets(arr)) : null;
          return res.json(successMessage(result));
     } catch (error) {
         return res.status(400).send(error.message);
@@ -105,6 +102,7 @@ module.exports.editPet = async (req, res) => {
       age,
       photos,
       category,
+      gender,
       petStatus,
       addressLine,
       city,
@@ -112,27 +110,11 @@ module.exports.editPet = async (req, res) => {
       pincode,
       coordinates,
     } = req.body;
-    //addressId of a pet for updation
-    const getPetAddressIdQuery = `
-            select addressId from pets where petId = "${req.params.petId}";
-            `;
+
     //get addressId
-    const [responseAdd] = await query(getPetAddressIdQuery);
-    const updateAddressQuery = `
-            update address 
-            set addressLine = "${addressLine}", city = "${city}", 
-            state = "${state}", pincode = "${pincode}", 
-            coordinates = "${coordinates}" 
-            where addressId = "${responseAdd.addressId}";
-            `;
-    const updatePetQuery = `
-            update pets 
-            set petName="${petName}", petInfo="${petInfo}", breed="${breed}", age="${age}",
-            photos="${photos}", category="${category}", petStatus="${petStatus}"
-            where petId="${req.params.petId}";
-            `;
-    const result = await query(updatePetQuery);
-    await query(updateAddressQuery);
+    const [responsePet] = await query(sqlQueries.getPets(req.params.petId));
+    const result = await query(sqlQueries.editPetDetails(petName,petInfo,breed,age,photos,category,gender,petStatus,req.params.petId));
+    await query(sqlQueries.editAddress(addressLine,city,state,pincode,coordinates,responsePet.addressId));
     return res.json(successMessage(result));
   } catch (error) {
     return res.status(400).send(error.message);
@@ -141,31 +123,16 @@ module.exports.editPet = async (req, res) => {
 
 module.exports.deletePetPost = async (req, res) => {
   try {
-    const getPetAddressIdQuery = `
-        select userId,addressId from pets where petId = "${req.params.petId}";
-        `;
-    const [responseAdd] = await query(getPetAddressIdQuery);
-    const getUserQuery = `
-        select uploadPetsId from users where userId = "${responseAdd.userId}";
-        `;
-    const [responseUser] = await query(getUserQuery);
+    const [responsePet] = await query(sqlQueries.getPets(req.params.petId));
+    const [responseUser] = await query(sqlQueries.getUser('userId', responsePet.userId));
     const newuploadPetsId = responseUser.uploadPetsId
       .split(",")
       .filter((idx) => idx != req.params.petId);
 
-    const deletePetQuery = `
-        delete from pets where petId = "${req.params.petId}";
-        `;
-    const deleteAddressQuery = `
-         delete from address where addressId = "${responseAdd.addressId}";
-        `;
-
-    const removePetIdQuery = `
-        update users set uploadPetsId="${newuploadPetsId}" where userId="${responseAdd.userId}"
-        `;
-    const result = await query(deletePetQuery);
-    await query(deleteAddressQuery);
-    await query(removePetIdQuery);
+    const updatedCol = `uploadPetsId="${newuploadPetsId}"`;
+    const result = await query(sqlQueries.deletePet(req.params.petId));
+    await query(sqlQueries.deleteAddress(responsePet.addressId));
+    await query(sqlQueries.updateUser(updatedCol, responsePet.userId));
     return res.json(successMessage(result));
   } catch (error) {
     return res.status(400).send(error.message);

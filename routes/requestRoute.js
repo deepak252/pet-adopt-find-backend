@@ -9,7 +9,6 @@ route.post("/pet/adoptrequest/:petId", auth, requestController.adoptRequest);
 //get All users who requested for adoption of a pet
 route.get("/pet/getrequests/:petId", auth, requestController.getPetAdoptRequests);
 
-
 //get All requests for adoption of pets by a user
 route.get("/user/allrequests/:userId", auth, requestController.getAllRequestsByUser);
 
