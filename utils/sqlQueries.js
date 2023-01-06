@@ -1,3 +1,6 @@
+const {petSqlObject, userSqlObject} = require("../utils/sqlJsonObjects");
+
+
 ///////USER TABLE QUERIES////////////
 module.exports.createUserTable = () => `CREATE TABLE IF NOT EXISTS 
 users (userId int(11) PRIMARY KEY AUTO_INCREMENT,
@@ -140,11 +143,44 @@ module.exports.insertRequest = (request) => {
   INSERT INTO requests VALUES (NULL, ${request.toString()});
  `;
 }
-module.exports.getAdoptRequest = (column, val) => {
+
+module.exports.requestsByPetId = (column, val) => {
   return `
   SELECT * FROM requests where ${column} = "${val}"
   `;
 }
+module.exports.requestsMade = (userId) => {
+  return `
+  select requestId, status, JSON_OBJECT(
+    ${petSqlObject()}   
+  ) as pet, JSON_OBJECT(
+    ${userSqlObject('reqBy')} 
+  ) as requestedBy, JSON_OBJECT(
+    ${userSqlObject('reqTo')} 
+  ) as requestedTo, requestedAt from requests
+  join pets on requests.petId = pets.petId
+  join users as reqBy on requests.adoptReqById = reqBy.userId
+  join users as reqTo on pets.userId = reqTo.userId
+  where reqBy.userId =${userId}
+  `;
+}
+
+module.exports.requestsReceived = (userId) => {
+  return `
+  select requestId, status, JSON_OBJECT(
+    ${petSqlObject()}   
+  ) as pet, JSON_OBJECT(
+    ${userSqlObject('reqBy')} 
+  ) as requestedBy, JSON_OBJECT(
+    ${userSqlObject('reqTo')} 
+  ) as requestedTo, requestedAt from requests
+  join pets on requests.petId = pets.petId
+  join users as reqBy on requests.adoptReqById = reqBy.userId
+  join users as reqTo on pets.userId = reqTo.userId
+  where reqTo.userId =${userId}
+  `;
+}
+
 module.exports.deleteRequest = (requestId) => {
   return `
   delete from requests where requestId="${requestId}";
