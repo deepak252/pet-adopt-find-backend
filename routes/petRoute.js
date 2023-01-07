@@ -16,7 +16,7 @@ route.get('/pet/getPets', petController.getPetsByStatus);
 route.get('/pet/mypets', auth, petController.getUploadedPetsByUser)
 
 //Edit pet post
-route.put('/pet/editPet/:petId', auth, petController.editPet)
+route.put('/pet/edit', auth, petController.editPet)
 
 //delete pet post
 route.delete('/pet/delete/:petId', auth, petController.deletePetPost);
