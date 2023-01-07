@@ -4,6 +4,6 @@ const adminController = require("../controllers/adminController")
 
 route.get('/admin/getAllUsers', adminController.allUsers);
 route.get('/admin/getUserById/:id', adminController.getUserById);
+route.post('/admin/verification')
 
-
-module.exports = route;
+module.exports = route;  

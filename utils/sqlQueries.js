@@ -91,7 +91,7 @@ module.exports.createPetTable = () => `CREATE TABLE IF NOT EXISTS pets(
     category varchar(25),
     gender varchar(10),
     petStatus varchar(10),
-    createdAt varchar(100)
+    createdAt varchar(100) 
     );
     `;
 module.exports.insertPet = (post) => {
@@ -134,7 +134,10 @@ CREATE TABLE IF NOT EXISTS requests(
     FOREIGN KEY (adoptReqById) REFERENCES users(userId) ON DELETE CASCADE,
     petId int(11),
     FOREIGN KEY (petId) REFERENCES pets(petId) ON  DELETE CASCADE,
+    verification varchar(15),
     status varchar(10),
+    message varchar(500),
+    aadharId varchar(30),
     requestedAt varchar(100)
 );
 `
@@ -142,16 +145,27 @@ module.exports.insertRequest = (request) => {
   return `
   INSERT INTO requests VALUES (NULL, ${request.toString()});
  `;
-}
+} 
 
 module.exports.requestsByPetId = (column, val) => {
   return `
-  SELECT * FROM requests where ${column} = "${val}"
+  SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
+    ${petSqlObject()}
+  ) as pet, JSON_OBJECT(
+    ${userSqlObject('reqBy')} 
+  ) as requestedBy, JSON_OBJECT(
+    ${userSqlObject('reqTo')} 
+  ) as requestedTo, requestedAt 
+  FROM requests
+  join pets on requests.petId = pets.petId
+  join users as reqBy on requests.adoptReqById = reqBy.userId
+  join users as reqTo on pets.userId = reqTo.userId
+  where pets.${column} = "${val}"
   `;
 }
 module.exports.requestsMade = (userId) => {
   return `
-  select requestId, status, JSON_OBJECT(
+  SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
     ${petSqlObject()}   
   ) as pet, JSON_OBJECT(
     ${userSqlObject('reqBy')} 
@@ -167,7 +181,7 @@ module.exports.requestsMade = (userId) => {
 
 module.exports.requestsReceived = (userId) => {
   return `
-  select requestId, status, JSON_OBJECT(
+  SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
     ${petSqlObject()}   
   ) as pet, JSON_OBJECT(
     ${userSqlObject('reqBy')} 
@@ -186,6 +200,7 @@ module.exports.deleteRequest = (requestId) => {
   delete from requests where requestId="${requestId}";
   `;
 }
+
 module.exports.updateStatus = (status, requestId) => {
   return `
   update requests set status="${status}" where requestId="${requestId}";

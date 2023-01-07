@@ -8,7 +8,8 @@ const {petSqlObject} = require("../utils/sqlJsonObjects");
 //make a adoption request of a pet
 module.exports.createRequest = async(req, res) => {
     try {
-        const newRequest = new Request(req.userId, req.params.petId, "pending", new Date());
+        const {message, aadharId} = req.body;
+        const newRequest = new Request(req.userId, req.params.petId, "inProgress", "pending", message, aadharId, new Date());
         await query(sqlQueries.createRequestTable());
         const result = await query(sqlQueries.insertRequest(newRequest));
        return res.json(successMessage(result))
@@ -29,7 +30,6 @@ module.exports.requestsByPetId = async(req, res) => {
     }
 }
 
-
 //get All requests made by user
 module.exports.requestsMade = async(req, res) => {
     try {
@@ -40,8 +40,7 @@ module.exports.requestsMade = async(req, res) => {
             errorMessage(error.message)
         );
     }
-} 
-
+}
 
 //get All requests received to user
 module.exports.requestsReceived = async (req, res) => {
@@ -53,7 +52,7 @@ module.exports.requestsReceived = async (req, res) => {
             errorMessage(error.message)
         );
     }
-} 
+}
 
 //delete adoption request
 module.exports.deleteAdoptionRequest = async(req, res) => {

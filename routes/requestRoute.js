@@ -24,6 +24,4 @@ route.get("/request/requestsReceived", auth, requestController.requestsReceived)
 route.get("/request/requestsMade", auth, requestController.requestsMade);
 
 
-
-
 module.exports = route;

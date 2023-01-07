@@ -24,7 +24,7 @@ module.exports.getUser =  async(req,res)=>{
 
 module.exports.updateUser = async(req, res) => {
     try {
-        const { fullName, email, mobile } = req.body;
+        const { fullName, email, mobile, profilePic, fcmId } = req.body;
         let updatedCols = "";
         if (fullName) {
             if (validator.validateName(fullName)){
@@ -55,6 +55,28 @@ module.exports.updateUser = async(req, res) => {
                 updatedCols += ","
             }
             updatedCols += ` mobile = "${mobile}" `
+        }
+        if (profilePic ) {
+            if (validator.validatePhone(profilePic)){
+                return res.status(400).json(
+                    errorMessage(validator.validatePhone(profilePic))
+                );
+            }
+            if (updatedCols.length > 0) {
+                updatedCols += ","
+            }
+            updatedCols += ` profilePic = "${profilePic}" `
+        }
+        if (fcmId ) {
+            if (validator.validatePhone(fcmId)){
+                return res.status(400).json(
+                    errorMessage(validator.validatePhone(fcmId))
+                );
+            }
+            if (updatedCols.length > 0) {
+                updatedCols += ","
+            }
+            updatedCols += ` fcmId = "${fcmId}" `
         }
         let result = await sql.query(sqlQueries.updateUser(updatedCols, req.userId));
 
