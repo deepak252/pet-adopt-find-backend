@@ -4,8 +4,9 @@ const {query} = require('../db');
 const Request = require('../model/Request');
 const { successMessage, errorMessage } = require('../utils/responseUtils');
 const sqlQueries = require("../utils/sqlQueries");
+const {petSqlObject} = require("../utils/sqlJsonObjects");
 //make a adoption request of a pet
-module.exports.adoptRequest = async(req, res) => {
+module.exports.createRequest = async(req, res) => {
     try {
         const newRequest = new Request(req.userId, req.params.petId, "pending", new Date());
         await query(sqlQueries.createRequestTable());
@@ -15,16 +16,11 @@ module.exports.adoptRequest = async(req, res) => {
         return res.status(400).json(errorMessage(error.message))
     }
 }
-//get All users who requested for adoption of a pet
-module.exports.getPetAdoptRequests = async(req, res) => {
+//get All requests received to a Pet
+module.exports.requestsByPetId = async(req, res) => {
     try {
         const petId = req.params.petId;
-        const result = await query(sqlQueries.getAdoptRequest('petId',petId));
-        if(result.length==0){
-            return res.status(404).json(
-                errorMessage("Requests is empty!")
-            );
-        }
+        const result = await query(sqlQueries.requestsByPetId('petId',petId));
         return res.json(successMessage(result));
     } catch (error) {
         return res.status(400).json(
@@ -34,15 +30,23 @@ module.exports.getPetAdoptRequests = async(req, res) => {
 }
 
 
-//get All requests of adoption of pets by a user
-module.exports.getAllRequestsByUser = async(req, res) => {
+//get All requests made by user
+module.exports.requestsMade = async(req, res) => {
     try {
-        const result = await query(sqlQueries.getAdoptRequest('adoptReqById', req.params.userId));
-        if(result.length==0){
-            return res.status(404).json(
-                errorMessage("Requests is empty!")
-            );
-        }
+        const result = await query(sqlQueries.requestsMade('adoptReqById', req.userId));
+        return res.json(successMessage(result));
+    } catch (error) {
+        return res.status(400).json(
+            errorMessage(error.message)
+        );
+    }
+} 
+
+
+//get All requests received to user
+module.exports.requestsReceived = async (req, res) => {
+    try {
+        const result = await query(sqlQueries.requestsReceived(req.userId));
         return res.json(successMessage(result));
     } catch (error) {
         return res.status(400).json(
