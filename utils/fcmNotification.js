@@ -1,19 +1,21 @@
-const registrationToken = 'fZEMrVGjTeixxvf0CLub6L:APA91bERZPXIiqYIIWaUUPnLEZqGR5OEbVfjxk81kOBludV30SuXSY6jD8QZtCQvknS-ljsBman4pH2UzUh8Qsh1kYb1IVXcRJE_10r3-R7UTMARb1-dJP_lvGw8kYz-Pg3X4DTtc99F';
-var admin = require("firebase-admin");
-var serviceAccount = require("../serviceKey.json");
+var admin = require("../firebaseAdmin");
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
 
-function sendNotification(registrationTokens, title, body) {
+module.exports.sendNotification = (registrationTokens,{title, body,image})=> {
     return new Promise((resolve, reject) => {
+        var data  ={};
+        if(title){
+            data['title'] = title
+        }
+        if(body){
+            data['body'] = body
+        }
+        if(image){
+            data['image'] = image
+        }
         
         var payload = {
-            notification: {
-                title: title,
-                body: body,
-            },
+            data: data,
         };
         var options = {
             priority: 'high',
@@ -38,4 +40,3 @@ function sendNotification(registrationTokens, title, body) {
             });
     });
 }
-sendNotification(registrationToken, "title", "body");
