@@ -1,9 +1,10 @@
 "use strict"
 
 const User = require('../model/User');
-const sql = require('../db');
+const {query} = require('../db');
 
 const { errorMessage, successMessage } = require("../utils/responseUtils");
+const sqlQueries = require("../utils/sqlQueries");
 
 module.exports.allUsers = async(req,res)=>{
     try {
@@ -41,3 +42,14 @@ module.exports.getUserById = async (req, res) => {
 }
 
 
+module.exports.verificationUpdate = async(req, res) => {
+    try {
+        const {verification} = req.body;
+        const result = await query(sqlQueries.updateVerificationStatus(verification, req.params.requestId))
+        return res.json(successMessage(result));
+    } catch (error) {
+        return res.status(400).json(
+            errorMessage(error.message)
+        );
+    }
+}

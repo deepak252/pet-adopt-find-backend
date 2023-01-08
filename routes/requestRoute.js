@@ -7,6 +7,8 @@ const { auth } = require("../middlewares/auth");
 //make a adoption request of a pet
 route.post("/request/create/:petId", auth, requestController.createRequest);
 
+//get all request
+route.get("/getallrequest", auth, requestController.getAllReq);
 //delete request
 route.delete("/request/delete/:requestId", auth, requestController.deleteAdoptionRequest);
 
