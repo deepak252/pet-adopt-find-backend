@@ -1,5 +1,5 @@
 class Pet{
-    constructor(userId, petName, petInfo=null, breed=null, age=0, address_id, photos=null, category=null, gender=null, petStatus, createdAt){
+    constructor(userId, petName, petInfo=null, breed=null, age=null, address_id, photos=null, category=null, gender=null, petStatus, createdAt){
         this.userId = userId;
         this.petName = petName;
         this.petInfo = petInfo;
@@ -20,4 +20,4 @@ class Pet{
     }
 }
 
-module.exports = Pet;
+module.exports = Pet; 

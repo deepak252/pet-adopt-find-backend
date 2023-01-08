@@ -38,6 +38,5 @@ module.exports = {
         if (pswd.length < 6) {
             return "Password must contain atleast 6 characters"
         }
-    }
-
+    },
 }

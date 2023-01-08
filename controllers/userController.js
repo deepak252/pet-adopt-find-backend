@@ -57,22 +57,12 @@ module.exports.updateUser = async(req, res) => {
             updatedCols += ` mobile = "${mobile}" `
         }
         if (profilePic ) {
-            if (validator.validatePhone(profilePic)){
-                return res.status(400).json(
-                    errorMessage(validator.validatePhone(profilePic))
-                );
-            }
             if (updatedCols.length > 0) {
                 updatedCols += ","
             }
             updatedCols += ` profilePic = "${profilePic}" `
         }
         if (fcmId ) {
-            if (validator.validatePhone(fcmId)){
-                return res.status(400).json(
-                    errorMessage(validator.validatePhone(fcmId))
-                );
-            }
             if (updatedCols.length > 0) {
                 updatedCols += ","
             }

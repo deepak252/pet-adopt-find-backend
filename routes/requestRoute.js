@@ -4,7 +4,6 @@ const requestController = require("../controllers/requestController");
 const { auth } = require("../middlewares/auth");
 
 
-
 //make a adoption request of a pet
 route.post("/request/create/:petId", auth, requestController.createRequest);
 

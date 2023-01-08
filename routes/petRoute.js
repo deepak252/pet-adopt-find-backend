@@ -15,6 +15,9 @@ route.get('/pet/getPets', petController.getPetsByStatus);
 //get user's uploaded pet
 route.get('/pet/mypets', auth, petController.getUploadedPetsByUser)
 
+//get Pet by Id
+route.get("/getpet/:petId", petController.getPetById)
+
 //Edit pet post
 route.put('/pet/editPet/:petId', auth, petController.editPet)
 
