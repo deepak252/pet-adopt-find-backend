@@ -17,6 +17,15 @@ module.exports.createRequest = async(req, res) => {
         return res.status(400).json(errorMessage(error.message))
     }
 }
+//get All requests
+module.exports.getAllReq = async(req, res) => {
+try {
+    const result = await query(sqlQueries.getAllRequests());
+    return res.json(successMessage(result))
+} catch (error) {
+    return res.status(400).json(errorMessage(error.message))
+}
+}
 //get All requests received to a Pet
 module.exports.requestsByPetId = async(req, res) => {
     try {

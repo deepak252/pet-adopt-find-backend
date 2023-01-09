@@ -147,6 +147,22 @@ module.exports.insertRequest = (request) => {
  `;
 } 
 
+module.exports.getAllRequests = () => {
+  return `
+  SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
+    ${petSqlObject()}
+  ) as pet, JSON_OBJECT(
+    ${userSqlObject('reqBy')} 
+  ) as requestedBy, JSON_OBJECT(
+    ${userSqlObject('reqTo')} 
+  ) as requestedTo, requestedAt 
+  FROM requests
+  join pets on requests.petId = pets.petId
+  join users as reqBy on requests.adoptReqById = reqBy.userId
+  join users as reqTo on pets.userId = reqTo.userId;
+  `
+}
+
 module.exports.requestsByPetId = (column, val) => {
   return `
   SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
@@ -204,5 +220,11 @@ module.exports.deleteRequest = (requestId) => {
 module.exports.updateStatus = (status, requestId) => {
   return `
   update requests set status="${status}" where requestId="${requestId}";
+  `;
+}
+
+module.exports.updateVerificationStatus = (status, requestId) => {
+  return `
+  update requests set verification="${status}" where requestId="${requestId}";
   `;
 }
