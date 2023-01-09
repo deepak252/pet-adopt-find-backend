@@ -15,7 +15,7 @@ class Pet{
     toString(){
         return `
            "${this.userId}", "${this.address_id}","${this.petName}","${this.petInfo}","${this.breed}","${this.age}",
-          "${this.photos}","${this.category}","${this.gender}","${this.petStatus}","${String(this.createdAt)}"
+          "${this.photos}","${this.category}","${this.gender}","${this.petStatus}","${this.createdAt}"
         `;
     }
 }

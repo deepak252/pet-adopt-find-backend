@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS requests(
     status varchar(10),
     message varchar(500),
     aadharId varchar(30),
-    requestedAt varchar(100)
+    createdAt varchar(100)
 );
 `
 module.exports.insertRequest = (request) => {
@@ -171,7 +171,7 @@ module.exports.requestsByPetId = (column, val) => {
     ${userSqlObject('reqBy')} 
   ) as requestedBy, JSON_OBJECT(
     ${userSqlObject('reqTo')} 
-  ) as requestedTo, requestedAt 
+  ) as requestedTo, createdAt 
   FROM requests
   join pets on requests.petId = pets.petId
   join users as reqBy on requests.adoptReqById = reqBy.userId
@@ -187,7 +187,7 @@ module.exports.requestsMade = (userId) => {
     ${userSqlObject('reqBy')} 
   ) as requestedBy, JSON_OBJECT(
     ${userSqlObject('reqTo')} 
-  ) as requestedTo, requestedAt from requests
+  ) as requestedTo, createdAt from requests
   join pets on requests.petId = pets.petId
   join users as reqBy on requests.adoptReqById = reqBy.userId
   join users as reqTo on pets.userId = reqTo.userId
@@ -203,7 +203,7 @@ module.exports.requestsReceived = (userId) => {
     ${userSqlObject('reqBy')} 
   ) as requestedBy, JSON_OBJECT(
     ${userSqlObject('reqTo')} 
-  ) as requestedTo, requestedAt from requests
+  ) as requestedTo, createdAt from requests
   join pets on requests.petId = pets.petId
   join users as reqBy on requests.adoptReqById = reqBy.userId
   join users as reqTo on pets.userId = reqTo.userId
