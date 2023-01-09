@@ -43,7 +43,7 @@ module.exports.createPet = async (req, res) => {
       category,
       gender,
       petStatus,
-      new Date()
+      new Date().toISOString()
     );
     await query(sqlQueries.createPetTable());
     var result = await query(sqlQueries.insertPet(newPost));
