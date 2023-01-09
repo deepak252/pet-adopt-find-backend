@@ -9,7 +9,7 @@ const {petSqlObject} = require("../utils/sqlJsonObjects");
 module.exports.createRequest = async(req, res) => {
     try {
         const {message, aadharId} = req.body;
-        const newRequest = new Request(req.userId, req.params.petId, "inProgress", "pending", message, aadharId, new Date());
+        const newRequest = new Request(req.userId, req.params.petId, "inProgress", "pending", message, aadharId, new Date().toISOString());
         await query(sqlQueries.createRequestTable());
         const result = await query(sqlQueries.insertRequest(newRequest));
        return res.json(successMessage(result))
