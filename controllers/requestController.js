@@ -42,7 +42,8 @@ module.exports.requestsByPetId = async(req, res) => {
 //get All requests made by user
 module.exports.requestsMade = async(req, res) => {
     try {
-        const result = await query(sqlQueries.requestsMade('adoptReqById', req.userId));
+        console.log(req.userId);
+        const result = await query(sqlQueries.requestsMade( req.userId));
         return res.json(successMessage(result));
     } catch (error) {
         return res.status(400).json(
