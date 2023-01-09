@@ -13,7 +13,7 @@ profilePic varchar(255),
 adoptPetsId varchar(21),
 uploadPetsId varchar(21),
 favouritePetsId varchar(21),
-fcmToken varchar(11)
+fcmToken varchar(200)
 );`;
 module.exports.insertUser = (user) => {
   return `INSERT INTO users VALUES 
