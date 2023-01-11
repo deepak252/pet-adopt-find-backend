@@ -13,6 +13,7 @@ app.use(require("./routes/petRoute"));
 app.use(require("./routes/userRoute"));
 app.use(require("./routes/adminRoute"));
 app.use(require("./routes/requestRoute"));
+app.use(require("./routes/messageRoute"));
 const PORT = process.env.PORT || "8000";
 
  app.listen(PORT, () => {
