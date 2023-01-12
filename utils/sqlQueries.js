@@ -113,6 +113,21 @@ module.exports.getPets = (petIds) => {
     join address on pets.addressId = address.addressId where petId in (${petIds}) order by createdAt desc;
     `
 }
+/**
+ * Populate user JSON Object in 'owner' column
+ */
+module.exports.getPetById = (petId) => {
+  return `
+    select pets.*,JSON_OBJECT(
+      ${userSqlObject()}  
+    ) as owner from pets
+    join users on pets.userId = users.userId
+    where petId="${petId}";
+  `
+}
+
+
+
 module.exports.editPetDetails = (petName, petInfo, breed, age, photos, category, gender, petStatus, petId) => {
   return `
   update pets 
