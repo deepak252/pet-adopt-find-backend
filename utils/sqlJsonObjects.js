@@ -19,5 +19,6 @@ module.exports.userSqlObject=(tname='users')=>{
     'email',  ${tname}.email, 
     'password',  ${tname}.password, 
     'mobile',  ${tname}.mobile, 
-    'profilePic',  ${tname}.profilePic`
+    'profilePic',  ${tname}.profilePic,
+    'fcmToken',  ${tname}.fcmToken`
 }
