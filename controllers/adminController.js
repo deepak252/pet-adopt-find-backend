@@ -8,7 +8,7 @@ const sqlQueries = require("../utils/sqlQueries");
 
 module.exports.allUsers = async(req,res)=>{
     try {
-        let result = await sql.query(`
+        let result = await query(`
             select * from users
         `)
         return res.json(successMessage(result));

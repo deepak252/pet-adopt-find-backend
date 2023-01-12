@@ -13,7 +13,7 @@ profilePic varchar(255),
 adoptPetsId varchar(21),
 uploadPetsId varchar(21),
 favouritePetsId varchar(21),
-fcmToken varchar(11)
+fcmToken varchar(200)
 );`;
 module.exports.insertUser = (user) => {
   return `INSERT INTO users VALUES 
@@ -227,4 +227,59 @@ module.exports.updateVerificationStatus = (status, requestId) => {
   return `
   update requests set verification="${status}" where requestId="${requestId}";
   `;
+}
+
+//Chats Feature
+ //////////////CONVERSATION ROOM TABLE //////////////
+ module.exports.createConversationTable = () => `
+ CREATE TABLE IF NOT EXISTS conversations(
+  conversationId int(11) PRIMARY KEY AUTO_INCREMENT,
+  firstMemberId int(11),
+  secondMemberId int(11),
+  FOREIGN KEY (firstMemberId) REFERENCES users(userId) ON DELETE CASCADE,
+  FOREIGN KEY (secondMemberId) REFERENCES users(userId) ON DELETE CASCADE
+  );
+ `
+
+module.exports.addUsersInConvo = (conversation) => {
+  console.log(conversation)
+  return `
+  INSERT INTO conversations VALUES
+  (NULL, ${conversation.toString()});
+  `
+}
+
+module.exports.showConversationList = (userId) => {
+  return `
+  SELECT conversationId, JSON_OBJECT(
+    ${userSqlObject('firstUser')}) as firstMember, 
+    JSON_OBJECT( ${userSqlObject('secondUser')}) as secondMember from conversations
+  join users as firstUser on conversations.firstMemberId = firstUser.userId
+  join users as secondUser on conversations.secondMemberId = secondUser.userId
+  where conversations.firstMemberId = ${userId} or conversations.secondMemberId = ${userId};
+  `
+}
+
+/////////////////CHAT BETWEEN USERS TABLE /////////////
+
+module.exports.createTableChat = () => `CREATE TABLE IF NOT EXISTS chats(
+  chatId int(11) PRIMARY KEY AUTO_INCREMENT,
+  conversationId int(11),
+  FOREIGN KEY (conversationId) REFERENCES conversations(conversationId) ON DELETE CASCADE,
+  senderId int(11),
+  message varchar(500),
+  createdAt varchar(100)
+);
+`
+
+module.exports.insertMessageQuery = (chat) => {
+  return `
+  INSERT INTO chats VALUES (NULL, ${chat.toString()});
+  `
+}
+
+module.exports.showChats = (conversationId) => {
+  return `
+  SELECT * from chats where conversationId="${conversationId}";
+  `
 }
