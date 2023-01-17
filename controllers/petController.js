@@ -19,16 +19,20 @@ module.exports.createPet = async (req, res) => {
       addressLine,
       city,
       state,
+      country,
       pincode,
-      coordinates,
+      longitude,
+      latitude,
       gender,
     } = req.body;
     const addressId = await insertAddress(
       addressLine,
       city,
       state,
+      country,
       pincode,
-      coordinates
+      longitude,
+      latitude
     );
     //console.log({addressId})
 

@@ -52,8 +52,10 @@ module.exports.createAddressTable = () => {
         addressLine varchar(100),
         city varchar(15),
         state varchar(15),
+        country varchar(15),
         pincode varchar(15),
-        coordinates varchar(80)
+        longitude varchar(80),
+        latitude varchar(80)
     );
     `
 }
@@ -62,12 +64,12 @@ module.exports.insertAddress = (address) => {
     INSERT INTO address VALUES (NULL,${address.toString()})
     `
 }
-module.exports.editAddress = (addressLine, city, state, pincode, coordinates, addressId) => {
+module.exports.editAddress = (addressLine, city, state, country, pincode, longitude, latitude, addressId) => {
   return `
   update address 
   set addressLine = "${addressLine}", city = "${city}", 
-  state = "${state}", pincode = "${pincode}", 
-  coordinates = "${coordinates}" 
+  state = "${state}", country = "${country}", pincode = "${pincode}", 
+  longitude = "${longitude}", latitude = "${latitude}"
   where addressId = "${addressId}";
   `;
 }
@@ -152,7 +154,7 @@ CREATE TABLE IF NOT EXISTS requests(
     verification varchar(15),
     status varchar(10),
     message varchar(500),
-    aadharId varchar(30),
+    aadharCard varchar(2550),
     createdAt varchar(100)
 );
 `
@@ -164,7 +166,7 @@ module.exports.insertRequest = (request) => {
 
 module.exports.getAllRequests = () => {
   return `
-  SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
+  SELECT requestId, verification, status, message, aadharCard, JSON_OBJECT(
     ${petSqlObject()}
   ) as pet, JSON_OBJECT(
     ${userSqlObject('reqBy')} 
@@ -180,7 +182,7 @@ module.exports.getAllRequests = () => {
 
 module.exports.requestsByPetId = (column, val) => {
   return `
-  SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
+  SELECT requestId, verification, status, message, aadharCard, JSON_OBJECT(
     ${petSqlObject()}
   ) as pet, JSON_OBJECT(
     ${userSqlObject('reqBy')} 
@@ -196,7 +198,7 @@ module.exports.requestsByPetId = (column, val) => {
 }
 module.exports.requestsMade = (userId) => {
   return `
-  SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
+  SELECT requestId, verification, status, message, aadharCard, JSON_OBJECT(
     ${petSqlObject()}   
   ) as pet, JSON_OBJECT(
     ${userSqlObject('reqBy')} 
@@ -212,7 +214,7 @@ module.exports.requestsMade = (userId) => {
 
 module.exports.requestsReceived = (userId) => {
   return `
-  SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
+  SELECT requestId, verification, status, message, aadharCard, JSON_OBJECT(
     ${petSqlObject()}   
   ) as pet, JSON_OBJECT(
     ${userSqlObject('reqBy')} 

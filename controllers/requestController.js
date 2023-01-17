@@ -12,8 +12,8 @@ const Constants = require('../config/constants');
 //make a adoption request of a pet
 module.exports.createRequest = async(req, res) => {
     try {
-        const {message, aadharId} = req.body;
-        const newRequest = new Request(req.userId, req.params.petId, "inProgress", "pending", message, aadharId, new Date().toISOString());
+        const {message, aadharCard} = req.body;
+        const newRequest = new Request(req.userId, req.params.petId, "inProgress", "pending", message, aadharCard, new Date().toISOString());
         await query(sqlQueries.createRequestTable());
         const result = await query(sqlQueries.insertRequest(newRequest));
 
