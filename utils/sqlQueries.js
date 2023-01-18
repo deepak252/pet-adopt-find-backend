@@ -9,6 +9,7 @@ email varchar(50),
 password varchar(255),
 mobile varchar(15),
 addressId int(11),
+FOREIGN KEY (addressId) REFERENCES address(addressId) ON DELETE CASCADE,
 profilePic varchar(255),
 adoptPetsId varchar(21),
 uploadPetsId varchar(21),
@@ -54,8 +55,8 @@ module.exports.createAddressTable = () => {
         state varchar(15),
         country varchar(15),
         pincode varchar(15),
-        longitude varchar(80),
-        latitude varchar(80)
+        longitude double,
+        latitude double
     );
     `
 }

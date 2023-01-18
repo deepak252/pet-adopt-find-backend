@@ -78,14 +78,35 @@ module.exports.updateUser = async (req, res) => {
       updatedCols += ` fcmToken = "${fcmToken}" `;
     }
     const userDet = await userById(req.userId);
-    if(!userDet.addressId){
-        const addressId = await insertAddress(addressLine,city,state,country,pincode,longitude, latitude);
+    if (addressLine && city && state) {
+      if (!userDet.addressId) {
+        const addressId = await insertAddress(
+          addressLine,
+          city,
+          state,
+          country,
+          pincode,
+          longitude,
+          latitude
+        );
         if (updatedCols.length > 0) {
-            updatedCols += ",";
-          }
-          updatedCols += ` addressId = "${addressId}" `;
-    }else 
-         await sql.query(sqlQueries.editAddress(addressLine,city,state,country,pincode,longitude, latitude,userDet.addressId));
+          updatedCols += ",";
+        }
+        updatedCols += ` addressId = "${addressId}" `;
+      } else
+        await sql.query(
+          sqlQueries.editAddress(
+            addressLine,
+            city,
+            state,
+            country,
+            pincode,
+            longitude,
+            latitude,
+            userDet.addressId
+          )
+        );
+    }
     let result = await sql.query(
       sqlQueries.updateUser(updatedCols, req.userId)
     );
