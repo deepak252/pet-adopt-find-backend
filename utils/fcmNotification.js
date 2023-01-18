@@ -53,7 +53,7 @@ module.exports = class SendNotification{
      * MySQL userID is Required
      */
     static toUserId = async (userId,{title, body,smallImage, bigImage})=> {
-        let user = await query(sqlQueries.getUser('userId', userId))
+        let user = await query(sqlQueries.getUserById( userId))
         if(user.length!=0 && user[0].fcmToken){
             return this.toFCMToken(user[0].fcmToken,{
                 title :title,

@@ -3,7 +3,7 @@ const sqlQueries = require("../utils/sqlQueries");
 
 exports.userById=async (userId)=>{
     try{
-        let result = await query(sqlQueries.getUser('userId', userId))
+        let result = await query(sqlQueries.getUserById( userId))
         if(result.length!=0){
             return result[0]
         }
