@@ -1,4 +1,4 @@
-const {petSqlObject, userSqlObject} = require("../utils/sqlJsonObjects");
+const {petSqlObject, userSqlObject, addressSqlObject} = require("../utils/sqlJsonObjects");
 
 
 ///////USER TABLE QUERIES////////////
@@ -9,6 +9,7 @@ email varchar(50),
 password varchar(255),
 mobile varchar(15),
 addressId int(11),
+FOREIGN KEY (addressId) REFERENCES address(addressId) ON DELETE CASCADE,
 profilePic varchar(255),
 adoptPetsId varchar(21),
 uploadPetsId varchar(21),
@@ -20,8 +21,23 @@ module.exports.insertUser = (user) => {
     (NULL, ${user.toString()}, NULL, NULL, NULL, NULL, NULL, NULL);
     `;
 };
-module.exports.getUser = (column, val) => {
-  return `SELECT * FROM users WHERE ${column} = "${val}"`;
+
+// select users.*,JSON_OBJECT(
+// 	'addressId', address.addressId   
+// ) as address from users
+// left join address on users.addressId = address.addressId
+// where users.userId=2
+
+// SELECT * FROM users WHERE ${column} = "${val}"
+
+module.exports.getUserById = (userId) => {
+  return `
+    SELECT users.*,JSON_OBJECT(
+      ${addressSqlObject('address')} 
+    ) AS address FROM users
+    LEFT JOIN address ON users.addressId = address.addressId
+    WHERE users.userId="${userId}";
+  `;
 };
 module.exports.updateUserPassword = (hashedPassword, email) => {
   return `
@@ -54,8 +70,8 @@ module.exports.createAddressTable = () => {
         state varchar(15),
         country varchar(15),
         pincode varchar(15),
-        longitude varchar(80),
-        latitude varchar(80)
+        longitude double,
+        latitude double
     );
     `
 }

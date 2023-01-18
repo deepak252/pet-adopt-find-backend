@@ -52,7 +52,7 @@ module.exports.createPet = async (req, res) => {
     await query(sqlQueries.createPetTable());
     var result = await query(sqlQueries.insertPet(newPost));
     if (result) {
-      const petIdsRes = await query(sqlQueries.getUser("userId", userId));
+      const petIdsRes = await query(sqlQueries.getUserById( userId));
 
       const petIds = petIdsRes[0].uploadPetsId
         ? [petIdsRes[0].uploadPetsId, result.insertId]
@@ -88,7 +88,7 @@ module.exports.getPetsByStatus = async(req, res) => {
 
 module.exports.getUploadedPetsByUser = async(req, res) => {
     try {
-        const [resultUser] = await query(sqlQueries.getUser('userId', req.userId));
+        const [resultUser] = await query(sqlQueries.getUserById( req.userId));
         const arr = resultUser?.uploadPetsId?.split(",");
          const result = arr ? await query(sqlQueries.getPets(arr)) : null;
          return res.json(successMessage(result));
@@ -141,7 +141,7 @@ module.exports.editPet = async (req, res) => {
 module.exports.deletePetPost = async (req, res) => {
   try {
     const [responsePet] = await query(sqlQueries.getPets(req.params.petId));
-    const [responseUser] = await query(sqlQueries.getUser('userId', responsePet.userId));
+    const [responseUser] = await query(sqlQueries.getUserById( responsePet.userId));
     const newuploadPetsId = responseUser.uploadPetsId
       .split(",")
       .filter((idx) => idx != req.params.petId);

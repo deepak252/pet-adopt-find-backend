@@ -38,7 +38,7 @@ module.exports.signUp = async (req, res) => {
         const user = new User(fullName, email, hashedPassword, mobile);
         
         await sql.query(sqlQueries.createUserTable() );
-        let result = await sql.query(sqlQueries.getUser('email', email));
+        let result = await sql.query(`SELECT * FROM users WHERE email = "${email}"`);
         if(result.length>0){
             return res.status(422).json(
                 errorMessage("Email already exists!")
@@ -61,7 +61,7 @@ module.exports.signUp = async (req, res) => {
 module.exports.signIn = async (req, res) => {
     try {
         const { email, password } = req.body;
-        let result = await sql.query(sqlQueries.getUser('email', email));
+        let result = await sql.query(`SELECT * FROM users WHERE email = "${email}"`);
         if(result.length<=0){
             return res.status(422).json(
                 errorMessage("Email not found!")
@@ -93,7 +93,7 @@ module.exports.resetPassword = async (req, res) => {
     try {
         const { email, newPassword } = req.body;
         //find if email is present
-        let result = await sql.query(sqlQueries.getUser('email', email));
+        let result = await sql.query(`SELECT * FROM users WHERE email = "${email}"`);
         if (result.length <= 0) {
             return res.status(422).json(
                 errorMessage("Email not found!")
