@@ -5,7 +5,7 @@ const {petSqlObject, userSqlObject} = require("../utils/sqlJsonObjects");
 module.exports.createUserTable = () => `CREATE TABLE IF NOT EXISTS 
 users (userId int(11) PRIMARY KEY AUTO_INCREMENT,
 fullName varchar(30) NOT NULL,
-email varchar(20),
+email varchar(50),
 password varchar(255),
 mobile varchar(15),
 addressId int(11),
@@ -52,8 +52,10 @@ module.exports.createAddressTable = () => {
         addressLine varchar(100),
         city varchar(15),
         state varchar(15),
+        country varchar(15),
         pincode varchar(15),
-        coordinates varchar(80)
+        longitude varchar(80),
+        latitude varchar(80)
     );
     `
 }
@@ -62,12 +64,12 @@ module.exports.insertAddress = (address) => {
     INSERT INTO address VALUES (NULL,${address.toString()})
     `
 }
-module.exports.editAddress = (addressLine, city, state, pincode, coordinates, addressId) => {
+module.exports.editAddress = (addressLine, city, state, country, pincode, longitude, latitude, addressId) => {
   return `
   update address 
   set addressLine = "${addressLine}", city = "${city}", 
-  state = "${state}", pincode = "${pincode}", 
-  coordinates = "${coordinates}" 
+  state = "${state}", country = "${country}", pincode = "${pincode}", 
+  longitude = "${longitude}", latitude = "${latitude}"
   where addressId = "${addressId}";
   `;
 }
@@ -149,10 +151,9 @@ CREATE TABLE IF NOT EXISTS requests(
     FOREIGN KEY (adoptReqById) REFERENCES users(userId) ON DELETE CASCADE,
     petId int(11),
     FOREIGN KEY (petId) REFERENCES pets(petId) ON  DELETE CASCADE,
-    verification varchar(15),
     status varchar(10),
     message varchar(500),
-    aadharId varchar(30),
+    aadharCard varchar(2550),
     createdAt varchar(100)
 );
 `
@@ -164,7 +165,7 @@ module.exports.insertRequest = (request) => {
 
 module.exports.getAllRequests = () => {
   return `
-  SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
+  SELECT requestId, status, message, aadharCard, JSON_OBJECT(
     ${petSqlObject()}
   ) as pet, JSON_OBJECT(
     ${userSqlObject('reqBy')} 
@@ -180,7 +181,7 @@ module.exports.getAllRequests = () => {
 
 module.exports.requestsByPetId = (column, val) => {
   return `
-  SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
+  SELECT requestId, status, message, aadharCard, JSON_OBJECT(
     ${petSqlObject()}
   ) as pet, JSON_OBJECT(
     ${userSqlObject('reqBy')} 
@@ -196,7 +197,7 @@ module.exports.requestsByPetId = (column, val) => {
 }
 module.exports.requestsMade = (userId) => {
   return `
-  SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
+  SELECT requestId, status, message, aadharCard, JSON_OBJECT(
     ${petSqlObject()}   
   ) as pet, JSON_OBJECT(
     ${userSqlObject('reqBy')} 
@@ -212,7 +213,7 @@ module.exports.requestsMade = (userId) => {
 
 module.exports.requestsReceived = (userId) => {
   return `
-  SELECT requestId, verification, status, message, aadharId, JSON_OBJECT(
+  SELECT requestId, status, message, aadharCard, JSON_OBJECT(
     ${petSqlObject()}   
   ) as pet, JSON_OBJECT(
     ${userSqlObject('reqBy')} 
@@ -224,6 +225,22 @@ module.exports.requestsReceived = (userId) => {
   join users as reqTo on pets.userId = reqTo.userId
   where reqTo.userId =${userId}
   `;
+}
+
+module.exports.getReqById = (requestId) => {
+  return `
+  SELECT requestId, status, message, aadharCard, JSON_OBJECT(
+    ${petSqlObject()}   
+  ) as pet, JSON_OBJECT(
+    ${userSqlObject('reqBy')} 
+  ) as requestedBy, JSON_OBJECT(
+    ${userSqlObject('reqTo')} 
+  ) as requestedTo, requests.createdAt from requests
+  join pets on requests.petId = pets.petId
+  join users as reqBy on requests.adoptReqById = reqBy.userId
+  join users as reqTo on pets.userId = reqTo.userId
+  where requestId =${requestId}
+  `
 }
 
 module.exports.deleteRequest = (requestId) => {
@@ -238,11 +255,11 @@ module.exports.updateStatus = (status, requestId) => {
   `;
 }
 
-module.exports.updateVerificationStatus = (status, requestId) => {
-  return `
-  update requests set verification="${status}" where requestId="${requestId}";
-  `;
-}
+// module.exports.updateVerificationStatus = (status, requestId) => {
+//   return `
+//   update requests set verification="${status}" where requestId="${requestId}";
+//   `;
+// }
 
 //Chats Feature
  //////////////CONVERSATION ROOM TABLE //////////////
@@ -257,7 +274,7 @@ module.exports.updateVerificationStatus = (status, requestId) => {
  `
 
 module.exports.addUsersInConvo = (conversation) => {
-  console.log(conversation)
+ // console.log(conversation)
   return `
   INSERT INTO conversations VALUES
   (NULL, ${conversation.toString()});

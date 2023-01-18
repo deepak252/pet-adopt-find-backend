@@ -19,16 +19,20 @@ module.exports.createPet = async (req, res) => {
       addressLine,
       city,
       state,
+      country,
       pincode,
-      coordinates,
+      longitude,
+      latitude,
       gender,
     } = req.body;
     const addressId = await insertAddress(
       addressLine,
       city,
       state,
+      country,
       pincode,
-      coordinates
+      longitude,
+      latitude
     );
     //console.log({addressId})
 
@@ -117,14 +121,16 @@ module.exports.editPet = async (req, res) => {
       addressLine,
       city,
       state,
+      country,
       pincode,
-      coordinates,
+      longitude,
+      latitude
     } = req.body;
 
     //get addressId
     const [responsePet] = await query(sqlQueries.getPets(petId));
     await query(sqlQueries.editPetDetails(petName,petInfo,breed,age,photos,category,gender,petStatus,petId));
-    await query(sqlQueries.editAddress(addressLine,city,state,pincode,coordinates,responsePet.addressId));
+    await query(sqlQueries.editAddress(addressLine,city,state,country,pincode,longitude, latitude,responsePet.addressId));
     const result = await query(sqlQueries.getPets([petId]));
     return res.json(successMessage(result));
   } catch (error) {

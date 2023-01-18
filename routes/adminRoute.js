@@ -5,10 +5,10 @@ const { auth } = require("../middlewares/auth");
 
 route.get("/admin/getAllUsers", adminController.allUsers);
 route.get("/admin/getUserById/:id", adminController.getUserById);
-route.post(
-  "/admin/verification/:requestId",
-  auth,
-  adminController.verificationUpdate
-);
+// route.post(
+//   "/admin/verification/:requestId",
+//   auth,
+//   adminController.verificationUpdate
+// );
 
 module.exports = route;
