@@ -130,7 +130,7 @@ module.exports.editPet = async (req, res) => {
     //get addressId
     const [responsePet] = await query(sqlQueries.getPets(petId));
     await query(sqlQueries.editPetDetails(petName,petInfo,breed,age,photos,category,gender,petStatus,petId));
-    await query(sqlQueries.editAddress(addressLine,city,state,country,pincode,coordinates,responsePet.addressId));
+    await query(sqlQueries.editAddress(addressLine,city,state,country,pincode,longitude, latitude,responsePet.addressId));
     const result = await query(sqlQueries.getPets([petId]));
     return res.json(successMessage(result));
   } catch (error) {
