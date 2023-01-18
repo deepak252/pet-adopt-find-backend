@@ -29,6 +29,7 @@ module.exports.addressSqlObject=(tname='address')=>{
     'city',  ${tname}.city, 
     'state',  ${tname}.state, 
     'pincode',  ${tname}.pincode, 
+    'country',  ${tname}.country, 
     'latitude',  ${tname}.latitude,
     'longitude',  ${tname}.longitude`
 }
