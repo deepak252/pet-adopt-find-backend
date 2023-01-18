@@ -27,3 +27,21 @@ exports.petById=async (petId)=>{
         console.log(e)
     }
 }
+
+exports.getReqById = async (reqId) => {
+    try {
+        var request = await query(sqlQueries.getReqById(reqId));
+        if(request.length != 0){
+            request = request[0];
+
+            request.pet = JSON.parse(request.pet);
+            request.requestedBy = JSON.parse(request.requestedBy);
+            request.requestedTo = JSON.parse(request.requestedTo);
+            request.pet.photos = request.pet.photos.split(',')
+            return request;
+        }
+        return request;
+    } catch (error) {
+        console.log(error)
+    }
+}
