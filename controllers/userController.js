@@ -8,7 +8,7 @@ const { userById } = require("../utils/misc");
 const { insertAddress } = require("./addressController");
 module.exports.getUser = async (req, res) => {
   try {
-    let result = await sql.query(sqlQueries.getUser("userId", req.userId));
+    let result = await sql.query(sqlQueries.getUserById( req.userId));
     if (result.length == 0) {
       return res.status(404).json(errorMessage("User not found!"));
     }
@@ -89,7 +89,7 @@ module.exports.updateUser = async (req, res) => {
     let result = await sql.query(
       sqlQueries.updateUser(updatedCols, req.userId)
     );
-    result = await sql.query(sqlQueries.getUser("userId", req.userId));
+    result = await sql.query(sqlQueries.getUserById( req.userId));
     if (result.length == 0) {
       return res.status(404).json(errorMessage("User not found!"));
     }

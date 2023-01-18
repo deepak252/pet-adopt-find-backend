@@ -22,3 +22,13 @@ module.exports.userSqlObject=(tname='users')=>{
     'profilePic',  ${tname}.profilePic,
     'fcmToken',  ${tname}.fcmToken`
 }
+
+module.exports.addressSqlObject=(tname='address')=>{
+    return `'addressId',  ${tname}.addressId, 
+    'addressLine',  ${tname}.addressLine, 
+    'city',  ${tname}.city, 
+    'state',  ${tname}.state, 
+    'pincode',  ${tname}.pincode, 
+    'latitude',  ${tname}.latitude,
+    'longitude',  ${tname}.longitude`
+}

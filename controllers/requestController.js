@@ -96,7 +96,7 @@ module.exports.updateStatusRequest = async(req, res) => {
         const {status} = req.body;
         const request = await getReqById(req.params.requestId);
         if(status === 'Approved'){
-            const [userRes] = await query(sqlQueries.getUser('userId', request.requestedBy.userId));
+            const [userRes] = await query(sqlQueries.getUserById( request.requestedBy.userId));
             const petIds = userRes.adoptPetsId ?  [userRes.adoptPetsId,request.pet.petId] : [request.pet.petId];
             const updatePetQuery = `
             update pets set petStatus = "adopted" where petId = "${request.pet.petId}";
