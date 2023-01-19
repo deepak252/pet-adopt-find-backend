@@ -5,6 +5,9 @@ const { insertAddress } = require("./addressController");
 const { query } = require("../db");
 const { successMessage, errorMessage } = require("../utils/responseUtils");
 const sqlQueries = require("../utils/sqlQueries");
+const { userById, getDistanceFromLatLonInKm } = require("../utils/misc");
+const SendNotification = require("../utils/fcmNotification");
+const Constants = require("../config/constants");
 module.exports.createPet = async (req, res) => {
   try {
     const {
@@ -59,6 +62,30 @@ module.exports.createPet = async (req, res) => {
         : [result.insertId];
 
       await query(sqlQueries.updateUser(`uploadPetsId="${petIds}"`, userId));
+      const userDet = await userById(userId);
+      if(petStatus === "missing" && userDet.address){
+        const lat1 = userDet.address.latitude;
+        const long1 = userDet.address.longitude;
+        const users = await query(sqlQueries.getAllUsers());
+        let nearByUsers = [];
+         nearByUsers = users.map(user => {
+           return {
+             user : user,
+             distance : getDistanceFromLatLonInKm(lat1, long1, user.latitude, user.longitude)
+           }
+         })
+        nearByUsers.sort((a,b) => a.distance - b.distance);
+        console.log(nearByUsers)
+        nearByUsers.map(async(nearUser) => {
+          SendNotification.toUserId(nearUser.userId, {
+            title : `${petName} is missing in your area`,
+            body : `${userDet.fullName} has lost its pets ${petName}. If you see this pet please inform.`,
+            smallImage : userDet.profilePic ? userDet.profilePic  : Constants.userPic,
+            bigImage : photos.length>0 ? photos[0] : null
+          })
+        })
+        
+       }
       return res.json(successMessage(result));
     }
   } catch (error) {
@@ -80,6 +107,21 @@ module.exports.getPetsByStatus = async(req, res) => {
       //  if(req.query.status !== 'abandoned' || req.query.status !== 'adopt' || req.query.status !== 'missing')
              
         const result = await query(sqlQueries.getPetsByStatus(req.query.status));
+        const userDet = await userById(req.userId);
+        if(req.query.status === "missing" && userDet.address){
+         const lat1 = userDet.address.latitude;
+         const long1 = userDet.address.longitude;
+         let nearByMissingPets = [];
+          nearByMissingPets = result.map(missPet => {
+            return {
+              pet : missPet,
+              distance : getDistanceFromLatLonInKm(lat1, long1, missPet.latitude, missPet.longitude)
+            }
+          })
+         nearByMissingPets.sort((a,b) => a.distance - b.distance);
+         return res.json(successMessage(nearByMissingPets));
+        }
+        
         return res.json(successMessage(result));
     } catch (error) {
         return res.status(400).send(error.message);

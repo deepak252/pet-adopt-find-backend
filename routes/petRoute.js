@@ -10,7 +10,7 @@ route.post('/pet/create', auth, petController.createPet);
 route.get('/pet/getAllPets', petController.getAllPets);
 
 //get pets by status
-route.get('/pet/getPets', petController.getPetsByStatus);
+route.get('/pet/getPets',auth, petController.getPetsByStatus);
 
 //get user's uploaded pet
 route.get('/pet/mypets', auth, petController.getUploadedPetsByUser)

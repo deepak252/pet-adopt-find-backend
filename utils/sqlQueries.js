@@ -29,6 +29,11 @@ module.exports.insertUser = (user) => {
 // where users.userId=2
 
 // SELECT * FROM users WHERE ${column} = "${val}"
+module.exports.getAllUsers = () => {
+  return `
+    SELECT * FROM users left join address  on users.addressId = address.addressId;
+  `;
+};
 
 module.exports.getUserById = (userId) => {
   return `
