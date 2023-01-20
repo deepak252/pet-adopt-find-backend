@@ -20,6 +20,7 @@ module.exports.createConversationRoom = async (req, res) => {
 
 module.exports.showContactList = async (req, res) => {
   try {
+    await query(sqlQueries.createConversationTable());
     const result = await query(sqlQueries.showConversationList(req.userId));
     return res.json(successMessage(result));
   } catch (error) {
@@ -41,6 +42,7 @@ module.exports.sendMessage = async (req, res) => {
 
 module.exports.getAllMessages = async (req, res) => {
   try {
+    await query(sqlQueries.createConversationTable());
     const result = await query(sqlQueries.showChats(req.params.conversationId));
     return res.json(successMessage(result));
   } catch (error) {

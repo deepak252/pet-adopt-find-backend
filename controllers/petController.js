@@ -95,6 +95,7 @@ module.exports.createPet = async (req, res) => {
 
 module.exports.getAllPets = async (req, res) => {
   try {
+    await query(sqlQueries.createPetTable());
     const result = await query(sqlQueries.getAllPets());
     return res.json(successMessage(result));
   } catch (error) {
@@ -105,7 +106,7 @@ module.exports.getAllPets = async (req, res) => {
 module.exports.getPetsByStatus = async(req, res) => {
     try {
       //  if(req.query.status !== 'abandoned' || req.query.status !== 'adopt' || req.query.status !== 'missing')
-             
+        await query(sqlQueries.createPetTable());
         const result = await query(sqlQueries.getPetsByStatus(req.query.status));
         const userDet = await userById(req.userId);
         if(req.query.status === "missing" && userDet.address){
@@ -130,6 +131,7 @@ module.exports.getPetsByStatus = async(req, res) => {
 
 module.exports.getUploadedPetsByUser = async(req, res) => {
     try {
+      await query(sqlQueries.createPetTable());
         const [resultUser] = await query(sqlQueries.getUserById( req.userId));
         const arr = resultUser?.uploadPetsId?.split(",");
          const result = arr ? await query(sqlQueries.getPets(arr)) : null;
@@ -141,6 +143,7 @@ module.exports.getUploadedPetsByUser = async(req, res) => {
 
 module.exports.getPetById = async(req, res) => {
   try {
+    await query(sqlQueries.createPetTable());
     const result = await query(sqlQueries.getPets([req.params.petId]));
     return res.json(successMessage(result));
   } catch (error) {
@@ -169,6 +172,7 @@ module.exports.editPet = async (req, res) => {
       latitude
     } = req.body;
 
+    await query(sqlQueries.createPetTable());
     //get addressId
     const [responsePet] = await query(sqlQueries.getPets(petId));
     await query(sqlQueries.editPetDetails(petName,petInfo,breed,age,photos,category,gender,petStatus,petId));
