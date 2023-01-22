@@ -1,10 +1,11 @@
 class Conversation {
-    constructor(firstMember, secondMember){
-        this.firstMember = firstMember;
-        this.secondMember = secondMember;
+    constructor(userId1, userId2,createdAt){
+        this.userId1 = userId1;
+        this.userId2 = userId2;
+        this.createdAt = createdAt;
     }
     toString() {
-        return `"${this.firstMember}","${this.secondMember}"`
+        return `"${this.userId1}","${this.userId2}","${this.createdAt}"`
     }
 }
 
