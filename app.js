@@ -2,7 +2,10 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
 
+const MessageService = require('./services/messageService');
 
 app.use(express.json());
 app.use(cors());
@@ -13,19 +16,23 @@ app.use(require("./routes/userRoute"));
 app.use(require("./routes/adminRoute"));
 app.use(require("./routes/requestRoute"));
 
-const MessageService = require('./services/messageService');
-
 
 const PORT = process.env.PORT || "8000";
 
-var server = app.listen(PORT, () => {
-	console.log("server is running on port ", PORT);
+http.listen(PORT, () => {
+	console.log(`Server is running on PORT: ${PORT}`);
 });
 
+
+
+// var server = app.listen(PORT, () => {
+// 	console.log("server is running on port ", PORT);
+// });
+
 //////Socket////
-var io = require("socket.io")(server, {
-	cors: "*",
-});
+// var io = require("socket.io")(server, {
+// 	cors: "*",
+// });
 
 var liveUsers = {};  // {userId : 'socketId',...}
 
