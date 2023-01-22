@@ -144,11 +144,11 @@ module.exports.getPetById = (petId) => {
     select pets.*,JSON_OBJECT(
       ${userSqlObject()}  
     ) as owner from pets
-    join users on pets.userId = users.userId
+    join users on pets.userId = users.userId 
+    join address on pets.addressId = address.addressId
     where petId="${petId}";
-  `
+`
 }
-
 
 
 module.exports.editPetDetails = (petName, petInfo, breed, age, photos, category, gender, petStatus, petId) => {
