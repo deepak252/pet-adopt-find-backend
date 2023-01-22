@@ -13,7 +13,7 @@ const Constants = require('../config/constants');
 module.exports.createRequest = async(req, res) => {
     try {
         const {message, aadharCard} = req.body;
-        const newRequest = new Request(req.userId, req.params.petId, "pending", message, aadharCard, new Date().toISOString());
+        const newRequest = new Request(req.userId, req.params.petId, "Pending", message, aadharCard, new Date().toISOString());
         await query(sqlQueries.createRequestTable());
         const result = await query(sqlQueries.insertRequest(newRequest));
         
@@ -101,7 +101,7 @@ module.exports.updateStatusRequest = async(req, res) => {
         await query(sqlQueries.createRequestTable());
         const {status} = req.body;
         const request = await getReqById(req.params.requestId);
-        if(status === 'Approved'){
+        if(status === 'Accepted'){
             const [userRes] = await query(sqlQueries.getUserById( request.requestedBy.userId));
             const petIds = userRes.adoptPetsId ?  [userRes.adoptPetsId,request.pet.petId] : [request.pet.petId];
             const updatePetQuery = `
@@ -115,7 +115,7 @@ module.exports.updateStatusRequest = async(req, res) => {
         // var pet = await getReqById(req.params.requestId);
         // console.log(pet)
         SendNotification.toUserId(request.requestedBy.userId,{
-            title : `Request is ${status}`,
+            title : `Request has been ${status}`,
             body : `${request.requestedBy.fullName} requested to adopt ${request.pet.petName}`,
             smallImage : request.requestedBy.profilePic ? request.requestedBy.profilePic  : Constants.userPic,
             bigImage : request.pet.photos.length>0 ? request.pet.photos[0] : null

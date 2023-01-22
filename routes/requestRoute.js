@@ -12,7 +12,7 @@ route.get("/getallrequest", auth, requestController.getAllReq);
 //delete request
 route.delete("/request/delete/:requestId", auth, requestController.deleteAdoptionRequest);
 
-//update status of adoption of pet - Pending, Approved,  Rejected
+//update status of adoption of pet - Pending, Accepted,  Rejected
 route.put("/request/update/:requestId", auth, requestController.updateStatusRequest);
 
 //get all requests received for a pet

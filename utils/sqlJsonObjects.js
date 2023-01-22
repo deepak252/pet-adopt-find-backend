@@ -33,3 +33,15 @@ module.exports.addressSqlObject=(tname='address')=>{
     'latitude',  ${tname}.latitude,
     'longitude',  ${tname}.longitude`
 }
+
+
+// module.exports.conversationSqlObject=(tname='conversations')=>{
+//     return `'addressId',  ${tname}.addressId, 
+//     'addressLine',  ${tname}.addressLine, 
+//     'city',  ${tname}.city, 
+//     'state',  ${tname}.state, 
+//     'pincode',  ${tname}.pincode, 
+//     'country',  ${tname}.country, 
+//     'latitude',  ${tname}.latitude,
+//     'longitude',  ${tname}.longitude`
+// }
