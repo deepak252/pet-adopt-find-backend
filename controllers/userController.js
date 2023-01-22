@@ -8,6 +8,7 @@ const { userById } = require("../utils/misc");
 const { insertAddress } = require("./addressController");
 module.exports.getUser = async (req, res) => {
   try {
+    await sql.query(sqlQueries.createUserTable() );
     let result = await sql.query(sqlQueries.getUserById( req.userId));
     if (result.length == 0) {
       return res.status(404).json(errorMessage("User not found!"));
@@ -77,6 +78,7 @@ module.exports.updateUser = async (req, res) => {
       }
       updatedCols += ` fcmToken = "${fcmToken}" `;
     }
+    await sql.query(sqlQueries.createUserTable() );
     const userDet = await userById(req.userId);
     if (addressLine && city && state) {
       if (!userDet.addressId) {
@@ -122,6 +124,7 @@ module.exports.updateUser = async (req, res) => {
 
 module.exports.deleteUserById = async (req, res) => {
   try {
+    await sql.query(sqlQueries.createUserTable() );
     let result = await sql.query(sqlQueries.deleteUser(req.userId));
     return res.json(successMessage(result));
   } catch (error) {

@@ -61,6 +61,7 @@ module.exports.signUp = async (req, res) => {
 module.exports.signIn = async (req, res) => {
     try {
         const { email, password } = req.body;
+        await sql.query(sqlQueries.createUserTable() );
         let result = await sql.query(`SELECT * FROM users WHERE email = "${email}"`);
         if(result.length<=0){
             return res.status(422).json(

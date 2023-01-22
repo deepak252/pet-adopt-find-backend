@@ -29,6 +29,11 @@ module.exports.insertUser = (user) => {
 // where users.userId=2
 
 // SELECT * FROM users WHERE ${column} = "${val}"
+module.exports.getAllUsers = () => {
+  return `
+    SELECT * FROM users left join address  on users.addressId = address.addressId;
+  `;
+};
 
 module.exports.getUserById = (userId) => {
   return `
@@ -282,35 +287,77 @@ module.exports.updateStatus = (status, requestId) => {
  module.exports.createConversationTable = () => `
  CREATE TABLE IF NOT EXISTS conversations(
   conversationId int(11) PRIMARY KEY AUTO_INCREMENT,
-  firstMemberId int(11),
-  secondMemberId int(11),
-  FOREIGN KEY (firstMemberId) REFERENCES users(userId) ON DELETE CASCADE,
-  FOREIGN KEY (secondMemberId) REFERENCES users(userId) ON DELETE CASCADE
+  userId1 int(11),
+  userId2 int(11),
+  FOREIGN KEY (userId1) REFERENCES users(userId) ON DELETE CASCADE,
+  FOREIGN KEY (userId2) REFERENCES users(userId) ON DELETE CASCADE,
+  createdAt varchar(100)
   );
  `
-
-module.exports.addUsersInConvo = (conversation) => {
- // console.log(conversation)
+/**
+ * Insert row in conversations(room) table.
+ */
+module.exports.createConversation = (conversation) => {
   return `
   INSERT INTO conversations VALUES
   (NULL, ${conversation.toString()});
   `
 }
 
-module.exports.showConversationList = (userId) => {
+/**
+ * To get Conversation (Room) by conversationId 
+ */
+module.exports.conversationById = (conversationId) => {
   return `
   SELECT conversationId, JSON_OBJECT(
-    ${userSqlObject('firstUser')}) as firstMember, 
-    JSON_OBJECT( ${userSqlObject('secondUser')}) as secondMember from conversations
-  join users as firstUser on conversations.firstMemberId = firstUser.userId
-  join users as secondUser on conversations.secondMemberId = secondUser.userId
-  where conversations.firstMemberId = ${userId} or conversations.secondMemberId = ${userId};
-  `
+    ${userSqlObject('u1')}
+  ) AS user1, JSON_OBJECT(
+    ${userSqlObject('u2')}   
+  ) AS user2, createdAt FROM conversations
+  JOIN users AS u1 ON conversations.userId1 = u1.userId
+  JOIN users AS u2 ON conversations.userId2 = u2.userId
+  WHERE conversations.conversationId = "${conversationId}";
+  ` 
 }
+
+/**
+ * user1 is Admin, user2 is normal user
+ */
+module.exports.conversationByBothUsers = (userId1,userId2) => {
+  return `
+  SELECT conversationId, JSON_OBJECT(
+    ${userSqlObject('u1')}
+  ) AS user1, JSON_OBJECT(
+    ${userSqlObject('u2')}   
+  ) AS user2, createdAt FROM conversations
+  JOIN users AS u1 ON conversations.userId1 = u1.userId
+  JOIN users AS u2 ON conversations.userId2 = u2.userId
+  WHERE conversations.userId1="${userId1}" AND conversations.userId2="${userId2}"
+  ORDER BY createdAt DESC;
+  ` 
+}
+
+/**
+ * to get rooms having user with given userId
+ */
+ module.exports.conversationByUser = (userId) => {
+  return `
+  SELECT conversationId, JSON_OBJECT(
+    ${userSqlObject('u1')}
+  ) AS user1, JSON_OBJECT(
+    ${userSqlObject('u2')}   
+  ) AS user2, createdAt FROM conversations
+  JOIN users AS u1 ON conversations.userId1 = u1.userId
+  JOIN users AS u2 ON conversations.userId2 = u2.userId
+  WHERE conversations.userId1="${userId}" OR conversations.userId2="${userId}"
+  ORDER BY createdAt DESC;
+  ` 
+}
+ 
 
 /////////////////CHAT BETWEEN USERS TABLE /////////////
 
-module.exports.createTableChat = () => `CREATE TABLE IF NOT EXISTS chats(
+module.exports.createChatTable = () => `CREATE TABLE IF NOT EXISTS chats(
   chatId int(11) PRIMARY KEY AUTO_INCREMENT,
   conversationId int(11),
   FOREIGN KEY (conversationId) REFERENCES conversations(conversationId) ON DELETE CASCADE,
@@ -320,14 +367,22 @@ module.exports.createTableChat = () => `CREATE TABLE IF NOT EXISTS chats(
 );
 `
 
-module.exports.insertMessageQuery = (chat) => {
+module.exports.insertMessage = (chat) => {
   return `
   INSERT INTO chats VALUES (NULL, ${chat.toString()});
   `
 }
 
-module.exports.showChats = (conversationId) => {
+module.exports.allChats = (conversationId) => {
   return `
-  SELECT * from chats where conversationId="${conversationId}";
+  SELECT * from chats 
+  WHERE conversationId="${conversationId}"
+  ORDER BY createdAt DESC;
+  `
+}
+
+module.exports.chatById = (chatId) => {
+  return `
+  SELECT * from chats where chatId="${chatId}";
   `
 }

@@ -35,6 +35,7 @@ module.exports.createRequest = async(req, res) => {
 //get All requests
 module.exports.getAllReq = async(req, res) => {
 try {
+    await query(sqlQueries.createRequestTable());
     const result = await query(sqlQueries.getAllRequests());
     return res.json(successMessage(result))
 } catch (error) {
@@ -44,6 +45,7 @@ try {
 //get All requests received to a Pet
 module.exports.requestsByPetId = async(req, res) => {
     try {
+        await query(sqlQueries.createRequestTable());
         const petId = req.params.petId;
         const result = await query(sqlQueries.requestsByPetId('petId',petId));
         return res.json(successMessage(result));
@@ -57,6 +59,7 @@ module.exports.requestsByPetId = async(req, res) => {
 //get All requests made by user
 module.exports.requestsMade = async(req, res) => {
     try {
+        await query(sqlQueries.createRequestTable());
         const result = await query(sqlQueries.requestsMade( req.userId));
         return res.json(successMessage(result));
     } catch (error) {
@@ -69,6 +72,7 @@ module.exports.requestsMade = async(req, res) => {
 //get All requests received to user
 module.exports.requestsReceived = async (req, res) => {
     try {
+        await query(sqlQueries.createRequestTable());
         const result = await query(sqlQueries.requestsReceived(req.userId));
         return res.json(successMessage(result));
     } catch (error) {
@@ -81,6 +85,7 @@ module.exports.requestsReceived = async (req, res) => {
 //delete adoption request
 module.exports.deleteAdoptionRequest = async(req, res) => {
     try {
+        await query(sqlQueries.createRequestTable());
         const result = await query(sqlQueries.deleteRequest(req.params.requestId));
         return res.json(successMessage(result));
     } catch (error) {
@@ -93,6 +98,7 @@ module.exports.deleteAdoptionRequest = async(req, res) => {
 //accepted and reject request controller
 module.exports.updateStatusRequest = async(req, res) => {
     try {
+        await query(sqlQueries.createRequestTable());
         const {status} = req.body;
         const request = await getReqById(req.params.requestId);
         if(status === 'Approved'){
