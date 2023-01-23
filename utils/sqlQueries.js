@@ -386,3 +386,11 @@ module.exports.chatById = (chatId) => {
   SELECT * from chats where chatId="${chatId}";
   `
 }
+
+//////////////Favourites /////////////
+module.exports.getFavouritesPetByUserId = (userId) => {
+  return `
+   select * from pets where petId in (select favouritePetsId from users where petId = "${userId}");
+  `
+}
+

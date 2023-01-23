@@ -202,3 +202,37 @@ module.exports.deletePetPost = async (req, res) => {
   }
 };
 
+////////Favourites
+module.exports.getFavouritesPet = async(req, res) => {
+  try {
+    const result = await query(sqlQueries.getFavouritesPetByUserId(req.userId));
+    return res.json(successMessage(result));
+  } catch (error) {
+    return res.status(400).send(error.message);
+  }
+}
+
+module.exports.addToFavourites = async(req, res) => {
+  try {
+    const [userRes] = await query(sqlQueries.getUserById( req.userId));
+    const favouritePets = userRes.favouritePetsId ? [userRes.favouritePetsId, req.params.petId] : [req.params.petId];
+    const response = await query(sqlQueries.updateUser(`favouritePetsId="${favouritePets}"`, req.userId));
+    return res.json(successMessage(response)); 
+  } catch (error) {
+    return res.status(400).send(error.message);
+  }
+}
+
+module.exports.removeFavourite = async(req, res) => {
+  try {
+    const [userRes] = await query(sqlQueries.getUserById( req.userId));
+    const newFavourites = userRes.favouritePetsId
+      .split(",")
+      .filter((idx) => idx != req.params.petId);
+    const favouritePets = userRes.favouritePetsId ? [userRes.favouritePetsId, req.params.petId] : [req.params.petId];
+    const response = await query(sqlQueries.updateUser(`favouritePetsId="${favouritePets}"`, req.userId));
+    return res.json(successMessage(response)); 
+  } catch (error) {
+    return res.status(400).send(error.message);
+  }
+}
