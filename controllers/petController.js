@@ -202,7 +202,7 @@ module.exports.deletePetPost = async (req, res) => {
   }
 };
 
-////////Favourites
+////////Favourites////////////////
 module.exports.getFavouritesPet = async(req, res) => {
   try {
     const result = await query(sqlQueries.getFavouritesPetByUserId(req.userId));

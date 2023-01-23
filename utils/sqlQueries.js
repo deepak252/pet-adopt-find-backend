@@ -99,6 +99,12 @@ module.exports.deleteAddress = (addressId) => {
   delete from address where addressId = "${addressId}";
  `;
 }
+
+module.exports.getAddressById = (addressId) => {
+  return `
+  select * from address where addressId="${addressId}"; 
+  `
+}
 /////// PET TABLE QUERIES ////////////////
 module.exports.createPetTable = () => `CREATE TABLE IF NOT EXISTS pets(
     petId int(11) PRIMARY KEY AUTO_INCREMENT,
@@ -394,3 +400,20 @@ module.exports.getFavouritesPetByUserId = (userId) => {
   `
 }
 
+///////////// Notifications ///////////////////////
+module.exports.createNotificationTable = () => {
+  return `CREATE TABLE IF NOT EXISTS 
+  notifications (notificationId int(11) PRIMARY KEY AUTO_INCREMENT,
+  userId int NOT NULL,
+  title varchar(50),
+  description varchar(2550),
+  readty varchar(15),
+  addressId int(11),
+  FOREIGN KEY (addressId) REFERENCES address(addressId) ON DELETE CASCADE,
+  profilePic varchar(255),
+  adoptPetsId varchar(21),
+  uploadPetsId varchar(21),
+  favouritePetsId varchar(21),
+  fcmToken varchar(200)
+  );`;
+}

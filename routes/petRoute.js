@@ -33,5 +33,6 @@ route.put("/pet/removeToFav/:petId", auth, petController.removeFavourite);
 //get favourite
 route.get("/pet/getFavPet", auth, petController.getFavouritesPet);
 
+
 module.exports = route;
 
