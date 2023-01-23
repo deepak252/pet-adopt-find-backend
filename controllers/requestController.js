@@ -8,6 +8,7 @@ const sqlQueries = require("../utils/sqlQueries");
 const {petSqlObject} = require("../utils/sqlJsonObjects");
 const {userById,petById, getReqById} = require("../utils/misc");
 const Constants = require('../config/constants');
+const Notification = require('../model/Notification');
 
 //make a adoption request of a pet
 module.exports.createRequest = async(req, res) => {
@@ -26,7 +27,8 @@ module.exports.createRequest = async(req, res) => {
             smallImage : requestedByUser.profilePic ? requestedByUser.profilePic  : Constants.userPic,
             bigImage : pet.photos.length>0 ? pet.photos[0] : null
         })
-
+        const notification = new Notification(pet.owner.userId, 'Request', "Adopt Request Received", `${requestedByUser.fullName} requested to adopt ${pet.petName}`, "false",  new Date().toISOString())
+        await query(sqlQueries.addNotification(notification))
        return res.json(successMessage(result))
     } catch (error) {
         return res.status(400).json(errorMessage(error.message))
@@ -120,6 +122,8 @@ module.exports.updateStatusRequest = async(req, res) => {
             smallImage : request.requestedBy.profilePic ? request.requestedBy.profilePic  : Constants.userPic,
             bigImage : request.pet.photos.length>0 ? request.pet.photos[0] : null
         })
+        const notification = new Notification(pet.owner.userId, 'Request', `Request has been ${status}`,  `${request.requestedBy.fullName} requested to adopt ${request.pet.petName}`, "false",  new Date().toISOString())
+        await query(sqlQueries.addNotification(notification))
         return res.json(successMessage(result));
         //adoptPetsId
     } catch (error) {

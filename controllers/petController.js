@@ -84,7 +84,8 @@ module.exports.createPet = async (req, res) => {
             bigImage : photos.length>0 ? photos[0] : null
           })
         })
-        
+        const notification = new Notification(pet.owner.userId, 'Missing', `${petName} is missing in your area`,  `${userDet.fullName} has lost its pets ${petName}. If you see this pet please inform.`, "false",  new Date().toISOString())
+        await query(sqlQueries.addNotification(notification))
        }
       return res.json(successMessage(result));
     }

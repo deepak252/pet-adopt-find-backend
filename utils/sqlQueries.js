@@ -405,15 +405,26 @@ module.exports.createNotificationTable = () => {
   return `CREATE TABLE IF NOT EXISTS 
   notifications (notificationId int(11) PRIMARY KEY AUTO_INCREMENT,
   userId int NOT NULL,
+  type varchar(50),
   title varchar(50),
   description varchar(2550),
-  readty varchar(15),
-  addressId int(11),
-  FOREIGN KEY (addressId) REFERENCES address(addressId) ON DELETE CASCADE,
-  profilePic varchar(255),
-  adoptPetsId varchar(21),
-  uploadPetsId varchar(21),
-  favouritePetsId varchar(21),
-  fcmToken varchar(200)
+  read varchar(15),
+  createdAt varchar(100) 
   );`;
 }
+
+module.exports.addNotification = (notification) => {
+  return `INSERT INTO notifications VALUES (NULL, ${notification.toString()});`;
+};
+
+module.exports.getNotification = (userId) => {
+  return `Select * from notifications where userId="${userId}"`;
+}
+
+module.exports.updateNotification  = (updatedCols, userId) => {
+  return `
+    UPDATE notifications
+    set ${updatedCols}
+    where userId = "${userId}"
+`;
+};
