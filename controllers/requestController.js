@@ -27,6 +27,7 @@ module.exports.createRequest = async(req, res) => {
             smallImage : requestedByUser.profilePic ? requestedByUser.profilePic  : Constants.userPic,
             bigImage : pet.photos.length>0 ? pet.photos[0] : null
         })
+        await query(sqlQueries.createNotificationTable());
         const notification = new Notification(pet.owner.userId, 'Request', "Adopt Request Received", `${requestedByUser.fullName} requested to adopt ${pet.petName}`, "false",  new Date().toISOString())
         await query(sqlQueries.addNotification(notification))
        return res.json(successMessage(result))
@@ -122,7 +123,8 @@ module.exports.updateStatusRequest = async(req, res) => {
             smallImage : request.requestedBy.profilePic ? request.requestedBy.profilePic  : Constants.userPic,
             bigImage : request.pet.photos.length>0 ? request.pet.photos[0] : null
         })
-        const notification = new Notification(pet.owner.userId, 'Request', `Request has been ${status}`,  `${request.requestedBy.fullName} requested to adopt ${request.pet.petName}`, "false",  new Date().toISOString())
+        await query(sqlQueries.createNotificationTable());
+        const notification = new Notification(request.requestedBy.userId, 'Request', `Request has been ${status}`,  `${request.requestedBy.fullName} requested to adopt ${request.pet.petName}`, "false",  new Date().toISOString())
         await query(sqlQueries.addNotification(notification))
         return res.json(successMessage(result));
         //adoptPetsId

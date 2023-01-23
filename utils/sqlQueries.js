@@ -401,17 +401,16 @@ module.exports.getFavouritesPetByUserId = (userId) => {
 }
 
 ///////////// Notifications ///////////////////////
-module.exports.createNotificationTable = () => {
-  return `CREATE TABLE IF NOT EXISTS 
-  notifications (notificationId int(11) PRIMARY KEY AUTO_INCREMENT,
-  userId int NOT NULL,
-  type varchar(50),
+module.exports.createNotificationTable = () =>  `CREATE TABLE IF NOT EXISTS notifications(
+  notificationId int(11) PRIMARY KEY AUTO_INCREMENT,
+  userId int(11),
+  notify_type varchar(50),
   title varchar(50),
-  description varchar(2550),
-  read varchar(15),
+  description varchar(255),
+  isRead varchar(50),
   createdAt varchar(100) 
   );`;
-}
+
 
 module.exports.addNotification = (notification) => {
   return `INSERT INTO notifications VALUES (NULL, ${notification.toString()});`;

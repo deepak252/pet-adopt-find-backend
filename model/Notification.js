@@ -1,15 +1,15 @@
 class Notification{
-    constructor(userId, type, title=null, description=null, read=null, createdAt){
+    constructor(userId, notify_type, title=null, description=null, isRead=null, createdAt){
         this.userId = userId;
-        this.type = type;
+        this.notify_type = notify_type;
         this.title = title;
         this.description = description;
-        this.read = read;
+        this.isRead = isRead;
         this.createdAt = createdAt;
     }
     toString(){
         return `
-           "${this.userId}", "${this.type}","${this.title}","${this.description}","${this.read}","${this.createdAt}"`;
+           "${this.userId}", "${this.notify_type}","${this.title}","${this.description}","${this.isRead}","${this.createdAt}"`;
     }
 }
 
