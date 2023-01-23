@@ -35,10 +35,10 @@ module.exports.getAllNotify = async (req, res) => {
 
 module.exports.updateReadNotify = async (req, res) => {
   try {
-    const { read } = req.body;
-    const updateCols = `read = ${read}`;
+    const { read, notificationId } = req.body;
+    const updateCols = `isRead ="${read}"`;
     const result = await query(
-      sqlQueries.updateNotification(updateCols, req.userId)
+      sqlQueries.updateNotification(updateCols, req.userId, notificationId)
     );
     return res.json(successMessage(result));
   } catch (error) {

@@ -420,10 +420,10 @@ module.exports.getNotification = (userId) => {
   return `Select * from notifications where userId="${userId}"`;
 }
 
-module.exports.updateNotification  = (updatedCols, userId) => {
+module.exports.updateNotification  = (updatedCols, userId, notificationId) => {
   return `
     UPDATE notifications
     set ${updatedCols}
-    where userId = "${userId}"
+    where userId = "${userId}" and notificationId = "${notificationId}"
 `;
 };
