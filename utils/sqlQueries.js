@@ -390,7 +390,7 @@ module.exports.chatById = (chatId) => {
 //////////////Favourites /////////////
 module.exports.getFavouritesPetByUserId = (userId) => {
   return `
-   select * from pets where petId in (select favouritePetsId from users where petId = "${userId}");
+   select * from pets where petId in (select favouritePetsId from users where userId = "${userId}");
   `
 }
 

@@ -229,8 +229,7 @@ module.exports.removeFavourite = async(req, res) => {
     const newFavourites = userRes.favouritePetsId
       .split(",")
       .filter((idx) => idx != req.params.petId);
-    const favouritePets = userRes.favouritePetsId ? [userRes.favouritePetsId, req.params.petId] : [req.params.petId];
-    const response = await query(sqlQueries.updateUser(`favouritePetsId="${favouritePets}"`, req.userId));
+    const response = await query(sqlQueries.updateUser(`favouritePetsId="${newFavourites}"`, req.userId));
     return res.json(successMessage(response)); 
   } catch (error) {
     return res.status(400).send(error.message);
