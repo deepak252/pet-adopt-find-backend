@@ -99,6 +99,12 @@ module.exports.deleteAddress = (addressId) => {
   delete from address where addressId = "${addressId}";
  `;
 }
+
+module.exports.getAddressById = (addressId) => {
+  return `
+  select * from address where addressId="${addressId}"; 
+  `
+}
 /////// PET TABLE QUERIES ////////////////
 module.exports.createPetTable = () => `CREATE TABLE IF NOT EXISTS pets(
     petId int(11) PRIMARY KEY AUTO_INCREMENT,
@@ -144,11 +150,11 @@ module.exports.getPetById = (petId) => {
     select pets.*,JSON_OBJECT(
       ${userSqlObject()}  
     ) as owner from pets
-    join users on pets.userId = users.userId
+    join users on pets.userId = users.userId 
+    join address on pets.addressId = address.addressId
     where petId="${petId}";
-  `
+`
 }
-
 
 
 module.exports.editPetDetails = (petName, petInfo, breed, age, photos, category, gender, petStatus, petId) => {
@@ -386,3 +392,38 @@ module.exports.chatById = (chatId) => {
   SELECT * from chats where chatId="${chatId}";
   `
 }
+
+//////////////Favourites /////////////
+module.exports.getFavouritesPetByUserId = (userId) => {
+  return `
+   select * from pets where petId in (select favouritePetsId from users where userId = "${userId}");
+  `
+}
+
+///////////// Notifications ///////////////////////
+module.exports.createNotificationTable = () =>  `CREATE TABLE IF NOT EXISTS notifications(
+  notificationId int(11) PRIMARY KEY AUTO_INCREMENT,
+  userId int(11),
+  notify_type varchar(50),
+  title varchar(50),
+  description varchar(255),
+  isRead varchar(50),
+  createdAt varchar(100) 
+  );`;
+
+
+module.exports.addNotification = (notification) => {
+  return `INSERT INTO notifications VALUES (NULL, ${notification.toString()});`;
+};
+
+module.exports.getNotification = (userId) => {
+  return `Select * from notifications where userId="${userId}"`;
+}
+
+module.exports.updateNotification  = (updatedCols, userId, notificationId) => {
+  return `
+    UPDATE notifications
+    set ${updatedCols}
+    where userId = "${userId}" and notificationId = "${notificationId}"
+`;
+};

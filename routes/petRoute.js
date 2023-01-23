@@ -23,5 +23,16 @@ route.put('/pet/edit', auth, petController.editPet)
 
 //delete pet post
 route.delete('/pet/delete/:petId', auth, petController.deletePetPost);
+
+//add to favourite
+route.put("/pet/addToFav/:petId", auth, petController.addToFavourites);
+
+//remove favourite
+route.put("/pet/removeToFav/:petId", auth, petController.removeFavourite);
+
+//get favourite
+route.get("/pet/getFavPet", auth, petController.getFavouritesPet);
+
+
 module.exports = route;
 
